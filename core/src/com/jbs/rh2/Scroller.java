@@ -5,22 +5,24 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 public class Scroller extends Actor implements GestureListener {
+	Stage stage;
 	Array<Image> items;
-	float[] tempX;
 	Image currentSelection;
 	int currentIndex;
 	float margin = 100, itemWidth = 0;
 	boolean first = true;
 
-	public Scroller(Image... items) {
+	public Scroller(Stage stage, Image... items) {
 		this.items = new Array<Image>();
-
-		tempX = new float[items.length];
+		this.stage = stage;
 
 		for (int i = 0; i < items.length; i++) {
 			itemWidth = Math.max(items[i].getWidth(), itemWidth);
@@ -29,21 +31,30 @@ public class Scroller extends Actor implements GestureListener {
 		for (int i = 0; i < items.length; i++) {
 			this.items.add(items[i]);
 
-			items[i].setPosition(Constants.WIDTH / 2 - items[i].getWidth() / 2 + itemWidth * i + i * margin,
-					Constants.HEIGHT / 2 - items[i].getHeight() / 2);
+			items[i].setPosition(Constants.WIDTH / 2 - items[i].getWidth() / 2 + itemWidth * i + i
+					* margin, Constants.HEIGHT / 2 - items[i].getHeight() / 2);
 		}
-		currentIndex = 0;
-		currentSelection = items[0];
+		setCurrentSelection(0);
+	}
+
+	
+	public void show() {
+		
+		for (int i = 0; i < items.size; i++) {
+			stage.addActor(items.get(i));
+		}
 	}
 
 	public void setCurrentSelection(int index) {
 		currentIndex = index;
 		currentSelection = items.get(currentIndex);
-		
+
 		for (int i = 0; i < items.size; i++) {
 			items.get(i).addAction(
-					Actions.moveBy(Constants.WIDTH / 2 - items.get(index).getX() - items.get(index).getWidth() / 2, 0, 0.2f, Interpolation.pow2));
+					Actions.moveBy(Constants.WIDTH / 2 - items.get(index).getX()
+							- items.get(index).getWidth() / 2, 0, 0.2f, Interpolation.pow2));
 		}
+
 	}
 
 	public void lock() {
@@ -71,6 +82,7 @@ public class Scroller extends Actor implements GestureListener {
 		for (int i = 0; i < items.size; i++) {
 			items.get(i).act(delta);
 		}
+
 	}
 
 	@Override
@@ -85,6 +97,7 @@ public class Scroller extends Actor implements GestureListener {
 
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
+
 		return false;
 	}
 
@@ -115,14 +128,14 @@ public class Scroller extends Actor implements GestureListener {
 				items.get(i).setPosition(items.get(i).getX() + deltaX, items.get(i).getY());
 			}
 		}
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean panStop(float x, float y, int pointer, int button) {
 		first = true;
 		lock();
-		return false;
+		return true;
 	}
 
 	@Override

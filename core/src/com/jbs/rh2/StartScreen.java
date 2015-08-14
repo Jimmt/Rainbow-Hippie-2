@@ -9,11 +9,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
 public class StartScreen implements Screen, InputProcessor {
@@ -22,6 +24,8 @@ public class StartScreen implements Screen, InputProcessor {
 	Image logo, black;
 	Label startText;
 	Scroller scroller;
+	Image[] items;
+	ShopDialog shopDialog;
 
 	float moveTime = 0.5f;
 
@@ -29,11 +33,15 @@ public class StartScreen implements Screen, InputProcessor {
 		this.rh2 = rh2;
 		stage = new Stage(new FillViewport(Constants.WIDTH, Constants.HEIGHT));
 
-		black = new Image(Textures.getTex("black.png"));
+		black = new Image(Assets.getTex("black.png"));
 		black.setFillParent(true);
 		black.setColor(new Color(1, 1, 1, 0.8f));
+		
+		shopDialog = new ShopDialog();
+	
+		
 
-		logo = new Image(Textures.getTex("logo.png"));
+		logo = new Image(Assets.getTex("logo.png"));
 		logo.setPosition(Constants.WIDTH / 2 - logo.getWidth() / 2,
 				Constants.HEIGHT - logo.getHeight() - 30);
 
@@ -46,15 +54,43 @@ public class StartScreen implements Screen, InputProcessor {
 		startText.addAction(Actions.moveBy(0, 15, moveTime / 2));
 		addHoverActions();
 
-		Image[] items = { new Image(Textures.getTex("UI/Shop/Icon.png")),
-				new Image(Textures.getTex("UI/Levels/Level 1/00.png")),
-				new Image(Textures.getTex("UI/Levels/Level 2/01.png")) };
-		scroller = new Scroller(items);
+		Image[] temp = { new Image(Assets.getTex("UI/Shop/Icon.png")),
+				new Image(Assets.getTex("UI/Levels/Level 1/00.png")),
+				new Image(Assets.getTex("UI/Levels/Level 2/01.png")) };
+		items = temp;
+		setupListeners();
+		scroller = new Scroller(stage, items);
 
 		stage.addActor(logo);
 		stage.addActor(startText);
 
 		Gdx.input.setInputProcessor(this);
+	}
+	
+	public void setupListeners(){
+		items[0].addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				System.out.println("ddd");
+				shopDialog.show(stage);
+				
+			}
+
+		});
+		items[1].addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+
+			}
+
+		});
+		items[2].addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+
+			}
+
+		});
 	}
 
 	@Override
@@ -133,8 +169,9 @@ public class StartScreen implements Screen, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		darkenScreen();
-		Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(scroller), this));
+		Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(scroller), stage, this));
 		stage.addActor(scroller);
+		scroller.show();
 		return true;
 	}
 
