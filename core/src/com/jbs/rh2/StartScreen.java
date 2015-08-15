@@ -20,22 +20,25 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 
 public class StartScreen implements Screen, InputProcessor {
 	RH2 rh2;
+	Stage bgStage;
 	Stage stage;
 	Image logo, black;
 	Label startText;
 	Scroller scroller;
 	Image[] items;
 	ShopDialog shopDialog;
+	Level1Background background;
 
 	float moveTime = 0.5f;
 
 	public StartScreen(RH2 rh2) {
 		this.rh2 = rh2;
 		stage = new Stage(new FillViewport(Constants.WIDTH, Constants.HEIGHT));
+		bgStage = new Stage(new FillViewport(Constants.WIDTH, Constants.HEIGHT));
 
-		black = new Image(Assets.getTex("black.png"));
+		black = new Image(Assets.getTex("white.png"));
 		black.setFillParent(true);
-		black.setColor(new Color(1, 1, 1, 0.8f));
+		black.setColor(new Color(0, 0, 0, 0.8f));
 
 		shopDialog = new ShopDialog();
 
@@ -59,6 +62,9 @@ public class StartScreen implements Screen, InputProcessor {
 		setupListeners();
 		scroller = new Scroller(stage, items);
 
+		background = new Level1Background(bgStage);
+		bgStage.addActor(background);
+		
 		stage.addActor(logo);
 		stage.addActor(startText);
 
@@ -93,7 +99,7 @@ public class StartScreen implements Screen, InputProcessor {
 	}
 
 	public void addHoverActions() {
-		Interpolation interp = Interpolation.pow2;
+		Interpolation interp = Interpolation.linear;
 		startText.addAction(Actions.sequence(Actions.moveBy(0, -15, moveTime, interp),
 				Actions.moveBy(0, 15, moveTime, interp)));
 	}
@@ -103,12 +109,16 @@ public class StartScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		bgStage.act(delta);
+		bgStage.draw();
+		
 		stage.act(delta);
 		stage.draw();
 
 		if (startText.getActions().size == 0) {
 			addHoverActions();
 		}
+		
 
 	}
 

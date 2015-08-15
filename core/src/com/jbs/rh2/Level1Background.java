@@ -1,35 +1,45 @@
 package com.jbs.rh2;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
 public class Level1Background extends Actor {
 	Stage stage;
 
-	Array<Image> clouds1; // bottom
-	Array<Image> clouds2;
-	Array<Image> clouds3;
-	Array<Image> clouds4;
+	CloudGroup clouds0;
+	CloudGroup clouds1;
+	CloudGroup clouds2;
+	CloudGroup clouds3;
+	CloudGroup clouds4;
+	CloudGroup[] cloudGroups;
 	Array<Image> topUpperMountains;
 	Array<Image> topLowerMountains;
 	Array<Image> bottomMountains;
 
 	YComparator comparator;
-	
-	float[] regions;
+
+	Image light;
+	Image background;
 
 	float nextTopUpperMountain, nextTopLowerMountain, nextBottomMountain, lastOffset;
-	float nextCloud0, nextCloud1, nextCloud2, nextCloud3, nextCloud4;
 
 	public Level1Background(Stage stage) {
-		clouds1 = new Array<Image>();
-		clouds2 = new Array<Image>();
-		clouds3 = new Array<Image>();
-		clouds4 = new Array<Image>();
+		clouds0 = new CloudGroup(0, stage);
+		clouds1 = new CloudGroup(1, stage);
+		clouds2 = new CloudGroup(2, stage);
+		clouds3 = new CloudGroup(3, stage);
+		clouds4 = new CloudGroup(4, stage);
+
+		CloudGroup[] temp = { clouds0, clouds1, clouds2, clouds3, clouds4 };
+		cloudGroups = temp;
+
 		topUpperMountains = new Array<Image>();
 		topLowerMountains = new Array<Image>();
 		bottomMountains = new Array<Image>();
@@ -41,14 +51,28 @@ public class Level1Background extends Actor {
 
 		comparator = new YComparator();
 
-		generate();
+		light = new Image(Assets.getTex("Effects/light.png"));
+		light.setSize(Constants.WIDTH, Constants.HEIGHT);
+		light.setName("light");
+		background = new Image(Assets.getTex("white.png"));
+		Color lighterColor = new Color(51 / 255f, 177 / 255f, 204 / 255f, 1.0f);
+		Color darkerColor = new Color(54 / 255f, 154 / 255f, 174 / 255f, 1.0f);
+		background.setColor(darkerColor);
+		background.setFillParent(true);
+		background.setName("background");
+
+		stage.addActor(background);
+		stage.addActor(light);
+		
+		moveClouds();
+	}
+	
+	public void moveClouds() {
+		for (CloudGroup group : cloudGroups) {
+			group.setVelocity(MathUtils.random(-1f, 1f));
+		}
 	}
 
-	public void generate() {
-		// 40 - 80 vertical
-		// 50-200 horizontal
-
-	}
 
 	@Override
 	public void act(float delta) {
@@ -57,51 +81,17 @@ public class Level1Background extends Actor {
 		float boundX = stage.getCamera().position.x + Constants.WIDTH / 2;
 
 		checkMountains(boundX);
-		checkClouds(boundX);
-		
-		
+
+		for (int i = 0; i < cloudGroups.length; i++) {
+			cloudGroups[i].act(delta);
+		}
+
+		light.setX(stage.getCamera().position.x - Constants.WIDTH / 2);
+		background.setX(stage.getCamera().position.x - Constants.WIDTH / 2);
 
 		stage.getActors().sort(comparator);
 	}
-
-	public void checkClouds(float boundX) {
-		if (boundX > nextCloud0) {
-			Image cloud = new Image(Assets.getTex("Maps/Forever Land Of Happiness/00.png"));
-			cloud.setPosition(nextCloud0, 0);
-			cloud.setName("cloud0");
-			nextCloud0 += cloud.getWidth();
-			stage.addActor(cloud);
-		}
-		if (boundX > nextCloud1) {
-			Image cloud = new Image(Assets.getTex("Maps/Forever Land Of Happiness/01.png"));
-			cloud.setPosition(nextCloud1, 1);
-			stage.addActor(cloud);
-			cloud.setName("cloud1");
-			nextCloud1 += cloud.getWidth();
-		}
-		if (boundX > nextCloud2) {
-			Image cloud = new Image(Assets.getTex("Maps/Forever Land Of Happiness/02.png"));
-			cloud.setPosition(nextCloud2, 2);
-			stage.addActor(cloud);
-			cloud.setName("cloud2");
-			nextCloud2 += cloud.getWidth();
-		}
-		if (boundX > nextCloud3) {
-			Image cloud = new Image(Assets.getTex("Maps/Forever Land Of Happiness/03.png"));
-			cloud.setPosition(nextCloud3, 3);
-			stage.addActor(cloud);
-			cloud.setName("cloud3");
-			nextCloud3 += cloud.getWidth();
-		}
-		if (boundX > nextCloud4) {
-			Image cloud = new Image(Assets.getTex("Maps/Forever Land Of Happiness/04.png"));
-			cloud.setPosition(nextCloud4, 4);
-			stage.addActor(cloud);
-			cloud.setName("cloud4");
-			nextCloud4 += cloud.getWidth();
-		}
-	}
-
+	
 	public void checkMountains(float boundX) {
 		if (boundX > nextTopUpperMountain) {
 			Image mountain = new Image(Assets.getTex("Maps/Forever Land Of Happiness/06.png"));
