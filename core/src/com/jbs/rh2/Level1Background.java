@@ -63,16 +63,7 @@ public class Level1Background extends Actor {
 
 		stage.addActor(background);
 		stage.addActor(light);
-		
-		moveClouds();
 	}
-	
-	public void moveClouds() {
-		for (CloudGroup group : cloudGroups) {
-			group.setVelocity(MathUtils.random(-1f, 1f));
-		}
-	}
-
 
 	@Override
 	public void act(float delta) {
@@ -81,6 +72,7 @@ public class Level1Background extends Actor {
 		float boundX = stage.getCamera().position.x + Constants.WIDTH / 2;
 
 		checkMountains(boundX);
+		removeMountains();
 
 		for (int i = 0; i < cloudGroups.length; i++) {
 			cloudGroups[i].act(delta);
@@ -91,7 +83,34 @@ public class Level1Background extends Actor {
 
 		stage.getActors().sort(comparator);
 	}
-	
+
+	public void removeMountains() {
+		for (int i = 0; i < topUpperMountains.size; i++) {
+			Image mountain = topUpperMountains.get(i);
+			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
+					- Constants.WIDTH / 2) {
+				stage.getActors().removeValue(mountain, false);
+				topUpperMountains.removeIndex(i);
+			}
+		}
+		for (int i = 0; i < topLowerMountains.size; i++) {
+			Image mountain = topLowerMountains.get(i);
+			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
+					- Constants.WIDTH / 2) {
+				stage.getActors().removeValue(mountain, false);
+				topLowerMountains.removeIndex(i);
+			}
+		}
+		for (int i = 0; i < bottomMountains.size; i++) {
+			Image mountain = bottomMountains.get(i);
+			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
+					- Constants.WIDTH / 2) {
+				stage.getActors().removeValue(mountain, false);
+				bottomMountains.removeIndex(i);
+			}
+		}
+	}
+
 	public void checkMountains(float boundX) {
 		if (boundX > nextTopUpperMountain) {
 			Image mountain = new Image(Assets.getTex("Maps/Forever Land Of Happiness/06.png"));
@@ -119,7 +138,7 @@ public class Level1Background extends Actor {
 			mountain.setPosition(nextTopUpperMountain, y);
 			lastOffset = MathUtils.random(200, 500);
 			nextTopUpperMountain += lastOffset;
-			topUpperMountains.add(mountain);
+			bottomMountains.add(mountain);
 			stage.addActor(mountain);
 			mountain.setName("mountain_bottom");
 		}

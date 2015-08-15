@@ -4,16 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class LevelScreen implements Screen {
-	Stage stage;
+	Stage bgStage, stage;
 	Array<Balloon> balloons;
 	Array<Obstacle> obstacles;
 
 	public LevelScreen(RH2 rh2) {
+		bgStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
 		stage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
 		
 		balloons = new Array<Balloon>();
@@ -30,11 +32,43 @@ public class LevelScreen implements Screen {
 		Gdx.gl.glClearColor(1, 1, 1, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		bgStage.act(delta);
+		bgStage.draw();
+		
 		stage.act(delta);
 		stage.draw();
 		
 		if(Gdx.input.isKeyPressed(Keys.D)){
-			stage.getCamera().position.x += 5;
+			bgStage.getCamera().position.x += 5;
+
+		}
+	}
+	
+	public void createBalloon(){
+		Balloon balloon = new Balloon();
+		balloons.add(balloon);
+		stage.addActor(balloon);
+		balloon.setPosition(stage.getCamera().position.x + Constants.WIDTH / 2, MathUtils.random(balloon.sprite.getHeight(), Constants.HEIGHT - balloon.sprite.getHeight()));
+	}
+
+	public void createObstacle() {
+		Obstacle obstacle = new Obstacle(stage.getCamera().position.x + Constants.WIDTH / 2);
+		obstacles.add(obstacle);
+		stage.addActor(obstacle);
+	}
+	
+	public void removeOffscreen() {
+		for (int i = 0; i < balloons.size; i++) {
+			if (balloons.get(i).getX() + balloons.get(i).sprite.getWidth() < stage.getCamera().position.x - Constants.WIDTH / 2) {
+				stage.getActors().removeValue(balloons.get(i), false);
+				balloons.removeIndex(i);
+			}
+		}
+		for (int i = 0; i < obstacles.size; i++){
+			if (obstacles.get(i).getX() + obstacles.get(i).getWidth() + obstacles.get(i).trail.getWidth() < stage.getCamera().position.x - Constants.WIDTH / 2) {
+				stage.getActors().removeValue(obstacles.get(i), false);
+				obstacles.removeIndex(i);
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package com.jbs.rh2;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -24,6 +25,30 @@ public class CloudGroup extends Actor {
 			cloud.setPosition(i * cloud.getWidth(), number);
 			cloud.setName("cloud" + number);
 			clouds.add(cloud);
+		}
+
+		setVelocity(MathUtils.random(-1f, 1f));
+	}
+
+	public void removeClouds() {
+		if (velocity > 0) {
+			Image cloud = clouds.get(clouds.size - 1);
+			if (cloud.getX() > stage.getCamera().position.x + Constants.WIDTH / 2) {
+				stage.getActors().removeValue(cloud, false);
+				clouds.removeIndex(clouds.size - 1);
+			}
+			cloud = clouds.get(0);
+			if (cloud.getX() + cloud.getWidth() < stage.getCamera().position.x - Constants.WIDTH) {
+				stage.getActors().removeValue(cloud, false);
+				clouds.removeIndex(0);
+			}
+		} else {
+			Image cloud = clouds.get(0);
+			if (cloud.getX() + cloud.getWidth() < stage.getCamera().position.x - Constants.WIDTH
+					/ 2) {
+				stage.getActors().removeValue(cloud, false);
+				clouds.removeIndex(0);
+			}
 		}
 	}
 
@@ -57,5 +82,7 @@ public class CloudGroup extends Actor {
 		for (Image image : clouds) {
 			image.setPosition(image.getX() + velocity, image.getY());
 		}
+
+		removeClouds();
 	}
 }
