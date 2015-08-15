@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RH2 extends Game {
-
+	static boolean DEBUG;
+	
 	@Override
 	public void create() {
+		DEBUG = true;
 		setScreen(new StartScreen(this));
 		
 	}

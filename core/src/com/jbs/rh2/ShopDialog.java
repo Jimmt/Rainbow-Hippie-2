@@ -8,6 +8,8 @@ public class ShopDialog extends Dialog {
 	public ShopDialog() {
 		super("", Assets.getSkin());
 		
+		
+		
 	}
 
 }

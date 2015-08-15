@@ -4,12 +4,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 public class Scroller extends Actor implements GestureListener {
@@ -37,12 +37,26 @@ public class Scroller extends Actor implements GestureListener {
 		setCurrentSelection(0);
 	}
 
-	
+	Action touchableAction = new Action() {
+
+		@Override
+		public boolean act(float delta) {
+			for (int i = 0; i < items.size; i++) {
+				items.get(i).setTouchable(Touchable.enabled);
+			}
+			return true;
+		}
+
+	};
+
 	public void show() {
-		
 		for (int i = 0; i < items.size; i++) {
 			stage.addActor(items.get(i));
+			items.get(i).addAction(
+					Actions.sequence(Actions.moveBy(Constants.WIDTH / 2, 0),
+							Actions.moveBy(-Constants.WIDTH / 2, 0, 0.5f, Interpolation.pow3)));
 		}
+
 	}
 
 	public void setCurrentSelection(int index) {
@@ -79,19 +93,11 @@ public class Scroller extends Actor implements GestureListener {
 	public void act(float delta) {
 		super.act(delta);
 
-		for (int i = 0; i < items.size; i++) {
-			items.get(i).act(delta);
-		}
-
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-
-		for (int i = 0; i < items.size; i++) {
-			items.get(i).draw(batch, parentAlpha);
-		}
 
 	}
 

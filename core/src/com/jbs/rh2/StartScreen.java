@@ -36,10 +36,8 @@ public class StartScreen implements Screen, InputProcessor {
 		black = new Image(Assets.getTex("black.png"));
 		black.setFillParent(true);
 		black.setColor(new Color(1, 1, 1, 0.8f));
-		
+
 		shopDialog = new ShopDialog();
-	
-		
 
 		logo = new Image(Assets.getTex("logo.png"));
 		logo.setPosition(Constants.WIDTH / 2 - logo.getWidth() / 2,
@@ -66,28 +64,24 @@ public class StartScreen implements Screen, InputProcessor {
 
 		Gdx.input.setInputProcessor(this);
 	}
-	
-	public void setupListeners(){
+
+	public void setupListeners() {
 		items[0].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("ddd");
 				shopDialog.show(stage);
-				
 			}
-
 		});
 		items[1].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-
+				rh2.setScreen(new Level1(rh2));
 			}
-
 		});
 		items[2].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-
+				rh2.setScreen(new Level2(rh2));
 			}
 
 		});
@@ -168,17 +162,18 @@ public class StartScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		darkenScreen();
-		Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(scroller), stage, this));
-		stage.addActor(scroller);
-		scroller.show();
-		return true;
+		
+		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		darkenScreen();
+		Gdx.input
+				.setInputProcessor(new InputMultiplexer(new GestureDetector(scroller), stage, this));
+		stage.addActor(scroller);
+		scroller.show();
+		return true;
 	}
 
 	@Override
