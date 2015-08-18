@@ -16,8 +16,8 @@ public class Balloon extends HitboxActor {
 	public Balloon(BalloonType type) {
 		super("balloon");
 		this.type = type;
-		
-		if(type.deadly){
+
+		if (type.deadly) {
 			oscillateDist = MathUtils.random(50, 120);
 		}
 
@@ -27,34 +27,35 @@ public class Balloon extends HitboxActor {
 	public Balloon() {
 		super("balloon");
 		type = BalloonType.cachedValues()[(int) (BalloonType.cachedValues().length * Math.random())];
-		
-		if(type.deadly){
+
+		if (type.deadly) {
 			oscillateDist = MathUtils.random(50, 120);
 		}
-		
+
 		createSprite();
 	}
 
 	public void createSprite() {
-		sprite = new AnimatedSprite(Utils.getAnimation("Balloon/balloon_" + type.color + ".png", 1 / 4f,
-				130, 250, PlayMode.LOOP));
+		sprite = new AnimatedSprite(Utils.getAnimation("Balloon/balloon_" + type.color + ".png",
+				1 / 4f, 130, 250, PlayMode.LOOP));
 		speed = MathUtils.random(0.5f, 2f);
 	}
 
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		
+
 		setX(getX() - speed);
 		sprite.setPosition(getX(), getY());
 		sprite.update(delta);
-		
+
 		setHitboxBounds(getX() + 20, getY() + 115, sprite.getWidth() - 35, sprite.getHeight() - 135);
-		
-		if(oscillateDist != 0 && getActions().size == 0){
-			addAction(Actions.sequence(Actions.moveBy(0, oscillateDist, 1.0f), Actions.moveBy(0, -oscillateDist, 1.0f)));
+
+		if (oscillateDist != 0 && getActions().size == 0) {
+			addAction(Actions.sequence(Actions.moveBy(0, oscillateDist, 1.0f),
+					Actions.moveBy(0, -oscillateDist, 1.0f)));
 		}
-		
+
 	}
 
 	@Override

@@ -13,9 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class Player extends HitboxActor {
 	AnimatedSprite sprite;
 	Actor ghost;
-	Image rainbow, mouth;
+	Rainbow rainbow;
+	Image mouth;
 	float mouthX, mouthY, animSpeed = 1 / 7f;
-	boolean firing, first;
+	boolean firing;
 	int[] offsets = { 0, 1, 2, 3, 2, 1, 0 };
 
 	public Player() {
@@ -23,7 +24,7 @@ public class Player extends HitboxActor {
 
 		sprite = new AnimatedSprite(Utils.getAnimation("Hippies/Dave/fly.png", animSpeed, 200, 180,
 				PlayMode.LOOP));
-		rainbow = new Image(Assets.getTex("Effects/rainbow.png"));
+		rainbow = new Rainbow(this);
 		mouth = new Image(Assets.getTex("Hippies/Cool Dave/mouth.png"));
 		ghost = new Actor();
 
@@ -32,14 +33,14 @@ public class Player extends HitboxActor {
 
 		setX(30);
 	}
-
+	
 	@Override
 	public void act(float delta) {
 		super.act(delta);
 
 		setX(getStage().getCamera().position.x - Constants.WIDTH / 2);
 
-		setHitboxBounds(getX() + 10, getY() + 3, sprite.getWidth() - 10, sprite.getHeight() - 12);
+		setHitboxBounds(getX() + 17, getY() + 10, sprite.getWidth() - 24, sprite.getHeight() - 20);
 
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(getRotation());

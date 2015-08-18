@@ -30,6 +30,7 @@ public class Level1 extends LevelScreen implements InputProcessor {
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, stage));
 	}
+	
 
 	@Override
 	public void render(float delta) {
@@ -57,8 +58,7 @@ public class Level1 extends LevelScreen implements InputProcessor {
 
 		removeOffscreen();
 
-		bgStage.getCamera().position.x += 3;
-		stage.getCamera().position.x += 3;
+		
 
 		checkInput();
 	}
