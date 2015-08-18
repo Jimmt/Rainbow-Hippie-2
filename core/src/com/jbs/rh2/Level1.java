@@ -3,6 +3,8 @@ package com.jbs.rh2;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -10,17 +12,16 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Level1 extends LevelScreen implements InputProcessor {
 	Level1Background background;
-	Player player;
 	boolean leftDown, rightDown;
-	ShapeRenderer sr;
 	float lastObstacleSpawn, obstacleTime = 4f;
 	float lastBalloonSpawn, balloonTime = 3f;
+
+	ShapeRenderer sr;
 
 	public Level1(RH2 rh2) {
 		super(rh2);
 
 		background = new Level1Background(bgStage);
-		player = new Player();
 
 		bgStage.addActor(background);
 		stage.addActor(player);
@@ -34,7 +35,9 @@ public class Level1 extends LevelScreen implements InputProcessor {
 	public void render(float delta) {
 		super.render(delta);
 
-		drawShapes();
+		if (RH2.DEBUG) {
+			drawShapes();
+		}
 
 		if (lastBalloonSpawn > balloonTime) {
 			lastBalloonSpawn = 0;
@@ -60,12 +63,17 @@ public class Level1 extends LevelScreen implements InputProcessor {
 		checkInput();
 	}
 
-
 	public void drawShapes() {
 		sr.setProjectionMatrix(stage.getCamera().combined);
 		sr.begin(ShapeType.Line);
 		sr.setColor(Color.RED);
-		sr.rect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
+		for (int i = 0; i < stage.getActors().size; i++) {
+			if (stage.getActors().get(i) instanceof HitboxActor) {
+				HitboxActor actor = (HitboxActor) (stage.getActors().get(i));
+				sr.rect(actor.x, actor.y, actor.width, actor.height);
+			}
+		}
+
 		sr.end();
 	}
 
@@ -80,9 +88,18 @@ public class Level1 extends LevelScreen implements InputProcessor {
 			}
 
 		}
-
 		if (rightDown) {
-			// shoot rainbow
+			player.firing = true;
+		} else {
+			player.firing = false;
+		}
+
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+				player.firing = true;
+			} else {
+				player.firing = false;
+			}
 		}
 	}
 

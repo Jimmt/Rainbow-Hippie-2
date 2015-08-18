@@ -13,6 +13,10 @@ public class LevelScreen implements Screen {
 	Stage bgStage, stage;
 	Array<Balloon> balloons;
 	Array<Obstacle> obstacles;
+	Array<HitboxActor> hitboxActors;
+	
+	Player player;
+	
 
 	public LevelScreen(RH2 rh2) {
 		bgStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
@@ -20,6 +24,10 @@ public class LevelScreen implements Screen {
 		
 		balloons = new Array<Balloon>();
 		obstacles = new Array<Obstacle>();
+		hitboxActors = new Array<HitboxActor>();
+		
+		player = new Player();
+		hitboxActors.add(player);
 	}
 
 	@Override
@@ -38,15 +46,28 @@ public class LevelScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 		
+		checkCollisions();
+		
 		if(Gdx.input.isKeyPressed(Keys.D)){
 			bgStage.getCamera().position.x += 5;
 
 		}
 	}
 	
+	public void checkCollisions(){
+		for(int i = 0; i < hitboxActors.size; i++){
+			for(int j = 0; j < hitboxActors.size && j != i; j++){
+				if(hitboxActors.get(i).getHitbox().overlaps(hitboxActors.get(j).getHitbox())){
+					System.out.println(hitboxActors.get(i).getName() + " " + hitboxActors.get(j).getName());
+				}
+			}
+		}
+	}
+	
 	public void createBalloon(){
 		Balloon balloon = new Balloon();
 		balloons.add(balloon);
+		hitboxActors.add(balloon);
 		stage.addActor(balloon);
 		balloon.setPosition(stage.getCamera().position.x + Constants.WIDTH / 2, MathUtils.random(balloon.sprite.getHeight(), Constants.HEIGHT - balloon.sprite.getHeight()));
 	}
@@ -54,6 +75,7 @@ public class LevelScreen implements Screen {
 	public void createObstacle() {
 		Obstacle obstacle = new Obstacle(stage.getCamera().position.x + Constants.WIDTH / 2);
 		obstacles.add(obstacle);
+		hitboxActors.add(obstacle);
 		stage.addActor(obstacle);
 	}
 	

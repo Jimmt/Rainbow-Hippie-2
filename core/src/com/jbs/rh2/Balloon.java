@@ -6,19 +6,32 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
-public class Balloon extends Actor {
+public class Balloon extends HitboxActor {
 	BalloonType type;
 	AnimatedSprite sprite;
-	float speed;
+	float speed, oscillateDist;
 
 	public Balloon(BalloonType type) {
+		super("balloon");
 		this.type = type;
+		
+		if(type.deadly){
+			oscillateDist = MathUtils.random(50, 120);
+		}
+
 		createSprite();
 	}
 
 	public Balloon() {
+		super("balloon");
 		type = BalloonType.cachedValues()[(int) (BalloonType.cachedValues().length * Math.random())];
+		
+		if(type.deadly){
+			oscillateDist = MathUtils.random(50, 120);
+		}
+		
 		createSprite();
 	}
 
@@ -31,9 +44,17 @@ public class Balloon extends Actor {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
+		
 		setX(getX() - speed);
 		sprite.setPosition(getX(), getY());
 		sprite.update(delta);
+		
+		setHitboxBounds(getX() + 20, getY() + 115, sprite.getWidth() - 35, sprite.getHeight() - 135);
+		
+		if(oscillateDist != 0 && getActions().size == 0){
+			addAction(Actions.sequence(Actions.moveBy(0, oscillateDist, 1.0f), Actions.moveBy(0, -oscillateDist, 1.0f)));
+		}
+		
 	}
 
 	@Override

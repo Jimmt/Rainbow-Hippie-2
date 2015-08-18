@@ -7,19 +7,21 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-public class Obstacle extends Image {
+public class Obstacle extends HitboxActor {
+	Image obstacle;
 	AnimatedSprite trail;
 	float rotateAmt, speed;
 
 	public Obstacle(float x) {
-		super(Assets.getTex("Obstacle/obstacle.png"));
+		super("obstacle");
+		obstacle = new Image(Assets.getTex("Obstacle/obstacle.png"));
 		trail = new AnimatedSprite(Utils.getAnimation("Obstacle/Trail.png", 1 / 4f, 114, 72,
 				PlayMode.LOOP));
 		
 		setY(MathUtils.random(getHeight(), Constants.HEIGHT - getHeight()));
 		setX(x);
-		setOrigin(getWidth() / 2, getHeight() / 2);
-		rotateAmt = MathUtils.random(-5, 5);
+		obstacle.setOrigin(obstacle.getWidth() / 2, obstacle.getHeight() / 2);
+		rotateAmt = MathUtils.randomBoolean() ? MathUtils.random(-5, -0.5f) : MathUtils.random(0.5f, 5f);
 		speed = MathUtils.random(3, 6);
 	}
 
@@ -27,6 +29,7 @@ public class Obstacle extends Image {
 	public void act(float delta) {
 		super.act(delta);
 		trail.update(delta);
+		obstacle.act(delta);
 	}
 
 	@Override
@@ -36,7 +39,14 @@ public class Obstacle extends Image {
 		setX(getX() - speed);
 		setRotation(getRotation() + rotateAmt);
 		
-		trail.setPosition(getX() + getWidth() + 40, getY() + getHeight() / 2 - trail.getHeight()
+		setHitboxBounds(getX() - obstacle.getWidth() / 2, getY() - obstacle.getHeight() / 2, obstacle.getWidth(), obstacle.getHeight());
+		
+		obstacle.setPosition(getX() - obstacle.getWidth() / 2, getY() - obstacle.getHeight() / 2);
+		obstacle.setRotation(getRotation());
+		
+		obstacle.draw(batch, parentAlpha);
+		
+		trail.setPosition(getX() + getWidth() + 50, getY() + getHeight() / 2 - trail.getHeight()
 				/ 2);
 		trail.draw(batch, parentAlpha);
 	}
