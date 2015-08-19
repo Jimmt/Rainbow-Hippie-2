@@ -58,7 +58,7 @@ public class Level1Background extends Actor {
 		Color lighterColor = new Color(51 / 255f, 177 / 255f, 204 / 255f, 1.0f);
 		Color darkerColor = new Color(54 / 255f, 154 / 255f, 174 / 255f, 1.0f);
 		background.setColor(darkerColor);
-		background.setFillParent(true);
+		background.setSize(Constants.WIDTH + 10, Constants.HEIGHT);
 		background.setName("background");
 
 		stage.addActor(background);

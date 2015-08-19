@@ -10,9 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 
-public class Level1 extends LevelScreen implements InputProcessor {
+public class Level1 extends LevelScreen {
 	Level1Background background;
-	boolean leftDown, rightDown;
 	float lastObstacleSpawn, obstacleTime = 4f;
 	float lastBalloonSpawn, balloonTime = 3f;
 
@@ -27,8 +26,6 @@ public class Level1 extends LevelScreen implements InputProcessor {
 		stage.addActor(player);
 
 		sr = new ShapeRenderer();
-
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, stage));
 	}
 	
 
@@ -57,10 +54,6 @@ public class Level1 extends LevelScreen implements InputProcessor {
 		}
 
 		removeOffscreen();
-
-		
-
-		checkInput();
 	}
 
 	public void drawShapes() {
@@ -73,90 +66,11 @@ public class Level1 extends LevelScreen implements InputProcessor {
 				sr.rect(actor.x, actor.y, actor.width, actor.height);
 			}
 		}
-
 		sr.end();
 	}
 
-	public void checkInput() {
-		if (leftDown) {
-			if (player.getY() + player.sprite.getHeight() < Constants.HEIGHT) {
-				player.setY(player.getY() + 6);
-			}
-		} else {
-			if (player.getY() > 0) {
-				player.setY(player.getY() - 6);
-			}
 
-		}
-		if (rightDown) {
-			player.firing = true;
-		} else {
-			player.firing = false;
-		}
 
-		if (Gdx.app.getType() == ApplicationType.Desktop) {
-			if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-				player.firing = true;
-			} else {
-				player.firing = false;
-			}
-		}
-	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (screenX <= Constants.WIDTH / 2) {
-			leftDown = true;
-		} else {
-			rightDown = true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (screenX <= Constants.WIDTH / 2) {
-			leftDown = false;
-		} else {
-			rightDown = false;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-
-		return false;
-	}
+	
 
 }
