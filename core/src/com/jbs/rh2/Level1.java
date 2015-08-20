@@ -27,7 +27,6 @@ public class Level1 extends LevelScreen {
 
 		sr = new ShapeRenderer();
 	}
-	
 
 	@Override
 	public void render(float delta) {
@@ -37,14 +36,11 @@ public class Level1 extends LevelScreen {
 			drawShapes();
 		}
 
-		if (lastBalloonSpawn > balloonTime) {
-			lastBalloonSpawn = 0;
-			balloonTime = MathUtils.random(balloonTime - 0.5f, balloonTime + 2f);
-			createBalloon();
-		} else {
-			lastBalloonSpawn += delta;
-		}
+		removeOffscreen();
+	}
 
+	@Override
+	public void spawnObstacles(float delta) {
 		if (lastObstacleSpawn > obstacleTime) {
 			lastObstacleSpawn = 0;
 			obstacleTime -= 0.01f;
@@ -52,8 +48,17 @@ public class Level1 extends LevelScreen {
 		} else {
 			lastObstacleSpawn += delta;
 		}
+	}
 
-		removeOffscreen();
+	@Override
+	public void spawnBalloons(float delta) {
+		if (lastBalloonSpawn > balloonTime) {
+			lastBalloonSpawn = 0;
+			balloonTime = MathUtils.random(balloonTime - 0.5f, balloonTime + 2f);
+			createBalloon();
+		} else {
+			lastBalloonSpawn += delta;
+		}
 	}
 
 	public void drawShapes() {
@@ -68,9 +73,5 @@ public class Level1 extends LevelScreen {
 		}
 		sr.end();
 	}
-
-
-
-	
 
 }

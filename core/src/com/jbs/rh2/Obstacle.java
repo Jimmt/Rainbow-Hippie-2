@@ -28,6 +28,9 @@ public class Obstacle extends HitboxActor {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
+		
+		setX(getX() - speed);
+		setRotation(getRotation() + rotateAmt);
 		trail.update(delta);
 		obstacle.act(delta);
 	}
@@ -36,8 +39,7 @@ public class Obstacle extends HitboxActor {
 	public void draw(Batch batch, float parentAlpha) {	
 		super.draw(batch, parentAlpha);
 
-		setX(getX() - speed);
-		setRotation(getRotation() + rotateAmt);
+
 		
 		setHitboxBounds(getX() - obstacle.getWidth() / 2, getY() - obstacle.getHeight() / 2, obstacle.getWidth(), obstacle.getHeight());
 		
@@ -46,7 +48,7 @@ public class Obstacle extends HitboxActor {
 		
 		obstacle.draw(batch, parentAlpha);
 		
-		trail.setPosition(getX() + getWidth() + 50, getY() + getHeight() / 2 - trail.getHeight()
+		trail.setPosition(getX() + getWidth() + 75, getY() + getHeight() / 2 - trail.getHeight()
 				/ 2);
 		trail.draw(batch, parentAlpha);
 	}

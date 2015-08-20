@@ -16,17 +16,17 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 public class LevelScreen implements Screen, InputProcessor {
 	Stage bgStage, stage, hudStage;
 	Hud hud;
-	
 
 	Array<Balloon> balloons;
 	Array<Obstacle> obstacles;
 	Array<HitboxActor> hitboxActors;
 
 	Player player;
-	boolean gameOver;
+	boolean gameOver, paused;
 	boolean leftDown, rightDown;
 
 	int score;
+	float cameraSpeed = 3f, playerSpeed = 6f, basePlayerSpeed = playerSpeed;
 
 	public LevelScreen(RH2 rh2) {
 		bgStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
@@ -41,9 +41,9 @@ public class LevelScreen implements Screen, InputProcessor {
 		hitboxActors.add(player);
 		hitboxActors.add(player.rainbow);
 
-		hud = new Hud();
+		hud = new Hud(this);
 		hudStage.addActor(hud);
-		
+
 		Gdx.input.setInputProcessor(new InputMultiplexer(hudStage, this, stage));
 	}
 
@@ -57,12 +57,15 @@ public class LevelScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1.0f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		if (!gameOver) {
+		if (!gameOver && !paused) {
 			bgStage.act(delta);
 			stage.act(delta);
 			checkCollisions();
-			scrollCamera(3f);
+			spawnBalloons(delta);
+			spawnObstacles(delta);
+			scrollCamera(cameraSpeed);
 		}
+
 		bgStage.draw();
 		stage.draw();
 
@@ -72,21 +75,37 @@ public class LevelScreen implements Screen, InputProcessor {
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			bgStage.getCamera().position.x += 5;
 		}
-		
+
 		checkInput();
 	}
-	
+
+	public void spawnBalloons(float delta) {
+
+	}
+
+	public void spawnObstacles(float delta) {
+
+	}
+
 	public void checkInput() {
 		if (leftDown) {
 			if (player.getY() + player.sprite.getHeight() < Constants.HEIGHT) {
-				player.setY(player.getY() + 6);
+				if (playerSpeed > basePlayerSpeed) {
+					playerSpeed--;
+					
+				} else {
+					
+				}
+				player.setY(player.getY() + playerSpeed);
+
 			}
 		} else {
 			if (player.getY() > 0) {
-				player.setY(player.getY() - 6);
+				player.setY(player.getY() - basePlayerSpeed);
 			}
 
 		}
+
 		if (rightDown) {
 			player.firing = true;
 		} else {
@@ -132,14 +151,16 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) b;
+
+			stage.getActors().removeValue(balloon, false);
+			balloons.removeValue(balloon, false);
+			hitboxActors.removeValue(balloon, false);
+
 			if (balloon.type.deadly) {
 				gameOver();
 			} else {
 				incrementScore();
 			}
-			stage.getActors().removeValue(balloon, false);
-			balloons.removeValue(balloon, false);
-			hitboxActors.removeValue(balloon, false);
 
 			return true;
 
@@ -211,7 +232,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	public void resize(int width, int height) {
 		stage.getViewport().setScreenSize(width, height);
 	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 
@@ -233,6 +254,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (screenX <= Constants.WIDTH / 2) {
+			playerSpeed = 15.0f;
 			leftDown = true;
 		} else {
 			rightDown = true;
@@ -270,7 +292,7 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	@Override
 	public void pause() {
-
+		paused = !paused;
 	}
 
 	@Override
