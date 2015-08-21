@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -25,6 +26,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	Player player;
 	boolean gameOver, paused;
 	boolean leftDown, rightDown;
+	boolean contactBlack;
+	float contactBalloonX;
 
 	int score;
 	float cameraSpeed = 3f, playerSpeed = 6f, basePlayerSpeed = playerSpeed;
@@ -44,7 +47,7 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		hud = new Hud(this);
 		hudStage.addActor(hud);
-		
+
 		gameOverDialog = new GameOverDialog();
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(hudStage, this, stage));
@@ -75,6 +78,17 @@ public class LevelScreen implements Screen, InputProcessor {
 		hudStage.act(delta);
 		hudStage.draw();
 
+		if (contactBlack) {
+			if (player.rainbow.getActions().size == 0) {
+				float distance = contactBalloonX - player.rainbow.getX();
+				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance : player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
+			}
+		} else {
+			if (player.rainbow.getActions().size == 0) {
+				player.rainbow.addAction(Actions.sizeTo(player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
+			}
+		}
+
 		if (Gdx.input.isKeyPressed(Keys.Q)) {
 			gameOver();
 		}
@@ -95,9 +109,9 @@ public class LevelScreen implements Screen, InputProcessor {
 			if (player.getY() + player.sprite.getHeight() < Constants.HEIGHT) {
 				if (playerSpeed > basePlayerSpeed) {
 					playerSpeed--;
-					
+
 				} else {
-					
+
 				}
 				player.setY(player.getY() + playerSpeed);
 
@@ -139,6 +153,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void checkCollisions() {
+		contactBlack = false;
 		for (int i = 0; i < hitboxActors.size; i++) {
 			for (int j = 0; j < hitboxActors.size && j != i; j++) {
 				if (hitboxActors.get(i).getHitbox().overlaps(hitboxActors.get(j).getHitbox())) {
@@ -154,31 +169,41 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) b;
+			Rainbow rainbow = (Rainbow) a;
+
+			if (balloon.type == BalloonType.WHITE) {
+				hud.splatScreen();
+			} else if (balloon.type == BalloonType.BLACK) {
+				contactBlack = true;
+				contactBalloonX = balloon.getX();
+				return true;
+			} else {
+				incrementScore();
+			}
 
 			stage.getActors().removeValue(balloon, false);
 			balloons.removeValue(balloon, false);
 			hitboxActors.removeValue(balloon, false);
-
-			if (balloon.type == BalloonType.WHITE) {
-				hud.splatScreen();
-			} else {
-				incrementScore();
-			}
 
 			return true;
 
 		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) a;
-			
-			stage.getActors().removeValue(balloon, false);
-			balloons.removeValue(balloon, false);
-			hitboxActors.removeValue(balloon, false);
-			
+			Rainbow rainbow = (Rainbow) b;
+
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
+			} else if (balloon.type == BalloonType.BLACK) {
+				contactBlack = true;
+				contactBalloonX = balloon.getX();
+				return true;
 			} else {
 				incrementScore();
 			}
+
+			stage.getActors().removeValue(balloon, false);
+			balloons.removeValue(balloon, false);
+			hitboxActors.removeValue(balloon, false);
 
 			return true;
 		}
@@ -195,8 +220,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void createBalloon() {
-//		Balloon balloon = new Balloon();
-		Balloon balloon = new Balloon(BalloonType.WHITE);
+// Balloon balloon = new Balloon();
+		Balloon balloon = new Balloon(BalloonType.BLACK);
 		balloons.add(balloon);
 		hitboxActors.add(balloon);
 		stage.addActor(balloon);
@@ -204,6 +229,7 @@ public class LevelScreen implements Screen, InputProcessor {
 				stage.getCamera().position.x + Constants.WIDTH / 2,
 				MathUtils.random(balloon.sprite.getHeight(),
 						Constants.HEIGHT - balloon.sprite.getHeight()));
+		balloon.toBack();
 	}
 
 	public void createObstacle() {

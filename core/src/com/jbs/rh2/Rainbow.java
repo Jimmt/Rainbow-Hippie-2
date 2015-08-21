@@ -6,12 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class Rainbow extends HitboxActor {
 	Image image;
 	Player player;
+	float origWidth;
 	
 	public Rainbow(Player player){
 		super("rainbow");
 		
 		this.player = player;
 		image = new Image(Assets.getTex("Effects/rainbow.png"));
+		origWidth = image.getWidth();
+		setSize(image.getWidth(), image.getHeight());
 	}
 	
 	public Player getPlayer(){
@@ -29,7 +32,8 @@ public class Rainbow extends HitboxActor {
 	public void draw(Batch batch, float parentAlpha){
 		super.draw(batch, parentAlpha);
 		
-		image.setPosition(getX(), getY() - image.getHeight() / 2);
+		image.setSize(getWidth(), getHeight());
+		image.setPosition(getX(), getY());
 		image.draw(batch, parentAlpha);
 		
 		setHitboxBounds(getX(), getY(), image.getWidth(), image.getHeight());
