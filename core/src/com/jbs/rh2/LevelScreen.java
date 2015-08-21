@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class LevelScreen implements Screen, InputProcessor {
 	Stage bgStage, stage, hudStage;
+	GameOverDialog gameOverDialog;
 	Hud hud;
 
 	Array<Balloon> balloons;
@@ -43,6 +44,8 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		hud = new Hud(this);
 		hudStage.addActor(hud);
+		
+		gameOverDialog = new GameOverDialog();
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(hudStage, this, stage));
 	}
@@ -72,8 +75,8 @@ public class LevelScreen implements Screen, InputProcessor {
 		hudStage.act(delta);
 		hudStage.draw();
 
-		if (Gdx.input.isKeyPressed(Keys.D)) {
-			bgStage.getCamera().position.x += 5;
+		if (Gdx.input.isKeyPressed(Keys.Q)) {
+			gameOver();
 		}
 
 		checkInput();
@@ -128,7 +131,7 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	public void gameOver() {
 		gameOver = true;
-		// show dialog
+		gameOverDialog.show(hudStage);
 	}
 
 	public void incrementScore() {
@@ -156,8 +159,8 @@ public class LevelScreen implements Screen, InputProcessor {
 			balloons.removeValue(balloon, false);
 			hitboxActors.removeValue(balloon, false);
 
-			if (balloon.type.deadly) {
-				gameOver();
+			if (balloon.type == BalloonType.WHITE) {
+				hud.splatScreen();
 			} else {
 				incrementScore();
 			}
@@ -166,14 +169,16 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) a;
-			if (balloon.type.deadly) {
-				gameOver();
-			} else {
-				incrementScore();
-			}
+			
 			stage.getActors().removeValue(balloon, false);
 			balloons.removeValue(balloon, false);
 			hitboxActors.removeValue(balloon, false);
+			
+			if (balloon.type == BalloonType.WHITE) {
+				hud.splatScreen();
+			} else {
+				incrementScore();
+			}
 
 			return true;
 		}
@@ -190,7 +195,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void createBalloon() {
-		Balloon balloon = new Balloon();
+//		Balloon balloon = new Balloon();
+		Balloon balloon = new Balloon(BalloonType.WHITE);
 		balloons.add(balloon);
 		hitboxActors.add(balloon);
 		stage.addActor(balloon);

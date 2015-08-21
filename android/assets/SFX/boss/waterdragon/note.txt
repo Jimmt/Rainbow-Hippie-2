@@ -1,0 +1,2 @@
+"Roar00-02" are random roars in intervals of 5-10 seconds when the player is 10 balloons from summoning the dragon.
+"Finalroar.wav" is the final roar it makes when the dragon enters the map.

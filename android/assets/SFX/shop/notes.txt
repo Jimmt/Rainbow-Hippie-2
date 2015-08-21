@@ -1,0 +1,2 @@
+-Error sound plays when player doesn't have enough money (or whenever theres an error ;o)
+- "cha ching" has a 5% chance of playing when players buy something.  Kinda like a secret bonus sound that players get to hear if they are lucky.
