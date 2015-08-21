@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 public class Balloon extends HitboxActor {
 	BalloonType type;
 	AnimatedSprite sprite;
+	Actor ghost;
 	float speed, oscillateDist;
 
 	public Balloon(BalloonType type) {
@@ -20,6 +21,8 @@ public class Balloon extends HitboxActor {
 		if (type.deadly) {
 			oscillateDist = MathUtils.random(50, 120);
 		}
+		
+		ghost = new Actor();
 
 		createSprite();
 	}
@@ -39,14 +42,19 @@ public class Balloon extends HitboxActor {
 		sprite = new AnimatedSprite(Utils.getAnimation("Balloon/balloon_" + type.color + ".png",
 				1 / 4f, 130, 250, PlayMode.LOOP));
 		speed = MathUtils.random(0.5f, 2f);
+		ghost.setSize(sprite.getWidth(), sprite.getHeight());
 	}
 
 	@Override
 	public void act(float delta) {
 		super.act(delta);
 
+		ghost.act(delta);
+		
 		setX(getX() - speed);
 		sprite.setPosition(getX(), getY());
+		System.err.println(ghost.getWidth());
+		sprite.setSize(ghost.getWidth(), ghost.getHeight());
 		sprite.update(delta);
 
 		setHitboxBounds(getX() + 20, getY() + 115, sprite.getWidth() - 35, sprite.getHeight() - 135);

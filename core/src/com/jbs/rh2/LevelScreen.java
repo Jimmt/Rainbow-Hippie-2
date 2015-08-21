@@ -81,11 +81,13 @@ public class LevelScreen implements Screen, InputProcessor {
 		if (contactBlack) {
 			if (player.rainbow.getActions().size == 0) {
 				float distance = contactBalloonX - player.rainbow.getX();
-				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance : player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
+				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance
+						: player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
 			}
 		} else {
 			if (player.rainbow.getActions().size == 0) {
-				player.rainbow.addAction(Actions.sizeTo(player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
+				player.rainbow.addAction(Actions.sizeTo(player.rainbow.origWidth,
+						player.rainbow.getHeight(), 0.2f));
 			}
 		}
 
@@ -169,12 +171,15 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) b;
-			Rainbow rainbow = (Rainbow) a;
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
 			} else if (balloon.type == BalloonType.BLACK) {
 				contactBlack = true;
+				
+				if (balloon.ghost.getActions().size == 0) {
+					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
+				}
 				contactBalloonX = balloon.getX();
 				return true;
 			} else {
@@ -189,12 +194,14 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) a;
-			Rainbow rainbow = (Rainbow) b;
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
 			} else if (balloon.type == BalloonType.BLACK) {
 				contactBlack = true;
+				if (balloon.ghost.getActions().size == 0) {
+					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
+				}
 				contactBalloonX = balloon.getX();
 				return true;
 			} else {
