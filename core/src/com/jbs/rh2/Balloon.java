@@ -13,6 +13,7 @@ public class Balloon extends HitboxActor {
 	AnimatedSprite sprite;
 	Actor ghost;
 	float speed, oscillateDist;
+	float lastSubtractTime = 1f, subtractTime = 1f;
 
 	public Balloon(BalloonType type) {
 		super("balloon");
@@ -44,6 +45,8 @@ public class Balloon extends HitboxActor {
 		speed = MathUtils.random(0.5f, 2f);
 		ghost.setSize(sprite.getWidth(), sprite.getHeight());
 	}
+	
+	
 
 	@Override
 	public void act(float delta) {
@@ -53,7 +56,7 @@ public class Balloon extends HitboxActor {
 		
 		setX(getX() - speed);
 		sprite.setPosition(getX(), getY());
-		System.err.println(ghost.getWidth());
+		
 		sprite.setSize(ghost.getWidth(), ghost.getHeight());
 		sprite.update(delta);
 

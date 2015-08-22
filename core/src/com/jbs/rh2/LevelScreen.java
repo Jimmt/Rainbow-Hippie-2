@@ -24,10 +24,12 @@ public class LevelScreen implements Screen, InputProcessor {
 	Array<HitboxActor> hitboxActors;
 
 	Player player;
+
 	boolean gameOver, paused;
 	boolean leftDown, rightDown;
 	boolean contactBlack;
 	float contactBalloonX;
+	Balloon contactBalloon;
 
 	int score;
 	float cameraSpeed = 3f, playerSpeed = 6f, basePlayerSpeed = playerSpeed;
@@ -79,6 +81,13 @@ public class LevelScreen implements Screen, InputProcessor {
 		hudStage.draw();
 
 		if (contactBlack) {
+			if (contactBalloon.lastSubtractTime > contactBalloon.subtractTime) {
+				score -= 2;
+				contactBalloon.lastSubtractTime = 0;
+			} else {
+				contactBalloon.lastSubtractTime += delta;
+			}
+			
 			if (player.rainbow.getActions().size == 0) {
 				float distance = contactBalloonX - player.rainbow.getX();
 				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance
@@ -89,6 +98,10 @@ public class LevelScreen implements Screen, InputProcessor {
 				player.rainbow.addAction(Actions.sizeTo(player.rainbow.origWidth,
 						player.rainbow.getHeight(), 0.2f));
 			}
+		}
+		
+		if(score < 0){
+			gameOver();
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.Q)) {
@@ -171,12 +184,13 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) b;
+			contactBalloon = balloon;
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
 			} else if (balloon.type == BalloonType.BLACK) {
 				contactBlack = true;
-				
+
 				if (balloon.ghost.getActions().size == 0) {
 					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
 				}
@@ -194,15 +208,18 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) a;
+			contactBalloon = balloon;
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
 			} else if (balloon.type == BalloonType.BLACK) {
 				contactBlack = true;
+
 				if (balloon.ghost.getActions().size == 0) {
 					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
 				}
 				contactBalloonX = balloon.getX();
+
 				return true;
 			} else {
 				incrementScore();
