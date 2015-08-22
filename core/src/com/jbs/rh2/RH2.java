@@ -12,7 +12,7 @@ public class RH2 extends Game {
 
 	@Override
 	public void create() {
-//		DEBUG = true;
+		DEBUG = true;
 
 		if (DEBUG) {
 			setScreen(new StartScreen(this));

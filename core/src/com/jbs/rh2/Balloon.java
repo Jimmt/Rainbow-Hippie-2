@@ -35,6 +35,8 @@ public class Balloon extends HitboxActor {
 		if (type.deadly) {
 			oscillateDist = MathUtils.random(50, 120);
 		}
+		
+		ghost = new Actor();
 
 		createSprite();
 	}

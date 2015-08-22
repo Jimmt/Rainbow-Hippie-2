@@ -31,8 +31,6 @@ public class SplashScreen implements Screen {
 		splash.addAction(Actions.sequence(Actions.alpha(0),
 				Actions.alpha(1f, 0.5f, Interpolation.pow2In), Actions.delay(1.5f),
 				Actions.alpha(0, 0.5f, Interpolation.pow2Out), changeScreenAction));
-
-// splash.setColor(1, 1, 1, 0.1f);
 	}
 
 	@Override

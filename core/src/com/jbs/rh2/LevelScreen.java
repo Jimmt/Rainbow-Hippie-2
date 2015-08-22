@@ -87,7 +87,7 @@ public class LevelScreen implements Screen, InputProcessor {
 			} else {
 				contactBalloon.lastSubtractTime += delta;
 			}
-			
+
 			if (player.rainbow.getActions().size == 0) {
 				float distance = contactBalloonX - player.rainbow.getX();
 				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance
@@ -99,8 +99,8 @@ public class LevelScreen implements Screen, InputProcessor {
 						player.rainbow.getHeight(), 0.2f));
 			}
 		}
-		
-		if(score < 0){
+
+		if (score < 0) {
 			gameOver();
 		}
 
@@ -171,9 +171,11 @@ public class LevelScreen implements Screen, InputProcessor {
 		contactBlack = false;
 		for (int i = 0; i < hitboxActors.size; i++) {
 			for (int j = 0; j < hitboxActors.size && j != i; j++) {
-				if (hitboxActors.get(i).getHitbox().overlaps(hitboxActors.get(j).getHitbox())) {
-					if (!checkBalloonCollision(hitboxActors.get(i), hitboxActors.get(j))) {
-						checkObstacleCollision(hitboxActors.get(i), hitboxActors.get(j));
+				if (i < hitboxActors.size && j < hitboxActors.size) {
+					if (hitboxActors.get(i).getHitbox().overlaps(hitboxActors.get(j).getHitbox())) {
+						if (!checkBalloonCollision(hitboxActors.get(i), hitboxActors.get(j))) {
+							checkObstacleCollision(hitboxActors.get(i), hitboxActors.get(j));
+						}
 					}
 				}
 			}
@@ -185,6 +187,9 @@ public class LevelScreen implements Screen, InputProcessor {
 		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) b;
 			contactBalloon = balloon;
+
+			player.rainbow.hitSprite.stop();
+			player.rainbow.hitSprite.play();
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
@@ -209,6 +214,9 @@ public class LevelScreen implements Screen, InputProcessor {
 		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
 			Balloon balloon = (Balloon) a;
 			contactBalloon = balloon;
+
+			player.rainbow.hitSprite.stop();
+			player.rainbow.hitSprite.play();
 
 			if (balloon.type == BalloonType.WHITE) {
 				hud.splatScreen();
@@ -244,8 +252,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void createBalloon() {
-// Balloon balloon = new Balloon();
-		Balloon balloon = new Balloon(BalloonType.BLACK);
+		Balloon balloon = new Balloon();
+// Balloon balloon = new Balloon(BalloonType.BLACK);
 		balloons.add(balloon);
 		hitboxActors.add(balloon);
 		stage.addActor(balloon);
