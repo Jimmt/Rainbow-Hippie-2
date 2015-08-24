@@ -15,33 +15,37 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class LevelScreen implements Screen, InputProcessor {
-	Stage bgStage, stage, hudStage;
+	Stage bgStage, stage, hudStage, dialogStage;
 	GameOverDialog gameOverDialog;
 	Hud hud;
 
 	Array<Balloon> balloons;
 	Array<Obstacle> obstacles;
 	Array<HitboxActor> hitboxActors;
+	Collisions collisions;
 
 	Player player;
 
 	boolean gameOver, paused;
 	boolean leftDown, rightDown;
 	boolean contactBlack;
+	float contactBlackTime;
 	float contactBalloonX;
 	Balloon contactBalloon;
 
-	int score;
+	int score = 0;
 	float cameraSpeed = 3f, playerSpeed = 6f, basePlayerSpeed = playerSpeed;
 
 	public LevelScreen(RH2 rh2) {
 		bgStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
 		stage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
 		hudStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
+		dialogStage = new Stage(new StretchViewport(Constants.WIDTH, Constants.HEIGHT));
 
 		balloons = new Array<Balloon>();
 		obstacles = new Array<Obstacle>();
 		hitboxActors = new Array<HitboxActor>();
+		collisions = new Collisions(this);
 
 		player = new Player();
 		hitboxActors.add(player);
@@ -68,7 +72,7 @@ public class LevelScreen implements Screen, InputProcessor {
 		if (!gameOver && !paused) {
 			bgStage.act(delta);
 			stage.act(delta);
-			checkCollisions();
+			collisions.update(this, delta);
 			spawnBalloons(delta);
 			spawnObstacles(delta);
 			scrollCamera(cameraSpeed);
@@ -80,25 +84,8 @@ public class LevelScreen implements Screen, InputProcessor {
 		hudStage.act(delta);
 		hudStage.draw();
 
-		if (contactBlack) {
-			if (contactBalloon.lastSubtractTime > contactBalloon.subtractTime) {
-				score -= 2;
-				contactBalloon.lastSubtractTime = 0;
-			} else {
-				contactBalloon.lastSubtractTime += delta;
-			}
-
-			if (player.rainbow.getActions().size == 0) {
-				float distance = contactBalloonX - player.rainbow.getX();
-				player.rainbow.addAction(Actions.sizeTo(distance > 0 ? distance
-						: player.rainbow.origWidth, player.rainbow.getHeight(), 0.2f));
-			}
-		} else {
-			if (player.rainbow.getActions().size == 0) {
-				player.rainbow.addAction(Actions.sizeTo(player.rainbow.origWidth,
-						player.rainbow.getHeight(), 0.2f));
-			}
-		}
+		dialogStage.act(delta);
+		dialogStage.draw();
 
 		if (score < 0) {
 			gameOver();
@@ -138,19 +125,14 @@ public class LevelScreen implements Screen, InputProcessor {
 
 		}
 
-		if (rightDown) {
-			player.firing = true;
-		} else {
-			player.firing = false;
-		}
-
-		if (Gdx.app.getType() == ApplicationType.Desktop) {
-			if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			if (rightDown) {
 				player.firing = true;
 			} else {
 				player.firing = false;
 			}
 		}
+
 	}
 
 	public void scrollCamera(float amount) {
@@ -159,101 +141,22 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void gameOver() {
-		gameOver = true;
-		gameOverDialog.show(hudStage);
+		if (!gameOver) {
+			gameOver = true;
+			gameOverDialog.setScore(score);
+			dialogStage.addActor(gameOverDialog);
+			gameOverDialog.show();
+			Gdx.input.setInputProcessor(dialogStage);
+		}
 	}
 
 	public void incrementScore() {
 		score++;
 	}
 
-	public void checkCollisions() {
-		contactBlack = false;
-		for (int i = 0; i < hitboxActors.size; i++) {
-			for (int j = 0; j < hitboxActors.size && j != i; j++) {
-				if (i < hitboxActors.size && j < hitboxActors.size) {
-					if (hitboxActors.get(i).getHitbox().overlaps(hitboxActors.get(j).getHitbox())) {
-						if (!checkBalloonCollision(hitboxActors.get(i), hitboxActors.get(j))) {
-							checkObstacleCollision(hitboxActors.get(i), hitboxActors.get(j));
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public boolean checkBalloonCollision(HitboxActor a, HitboxActor b) {
-
-		if (a.getName().equals("rainbow") && b.getName().equals("balloon")) {
-			Balloon balloon = (Balloon) b;
-			contactBalloon = balloon;
-
-			player.rainbow.hitSprite.stop();
-			player.rainbow.hitSprite.play();
-
-			if (balloon.type == BalloonType.WHITE) {
-				hud.splatScreen();
-			} else if (balloon.type == BalloonType.BLACK) {
-				contactBlack = true;
-
-				if (balloon.ghost.getActions().size == 0) {
-					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
-				}
-				contactBalloonX = balloon.getX();
-				return true;
-			} else {
-				incrementScore();
-			}
-
-			stage.getActors().removeValue(balloon, false);
-			balloons.removeValue(balloon, false);
-			hitboxActors.removeValue(balloon, false);
-
-			return true;
-
-		} else if (b.getName().equals("rainbow") && a.getName().equals("balloon")) {
-			Balloon balloon = (Balloon) a;
-			contactBalloon = balloon;
-
-			player.rainbow.hitSprite.stop();
-			player.rainbow.hitSprite.play();
-
-			if (balloon.type == BalloonType.WHITE) {
-				hud.splatScreen();
-			} else if (balloon.type == BalloonType.BLACK) {
-				contactBlack = true;
-
-				if (balloon.ghost.getActions().size == 0) {
-					balloon.ghost.addAction(Actions.sizeBy(3, 3, 0.2f));
-				}
-				contactBalloonX = balloon.getX();
-
-				return true;
-			} else {
-				incrementScore();
-			}
-
-			stage.getActors().removeValue(balloon, false);
-			balloons.removeValue(balloon, false);
-			hitboxActors.removeValue(balloon, false);
-
-			return true;
-		}
-		return false;
-	}
-
-	public boolean checkObstacleCollision(HitboxActor a, HitboxActor b) {
-		if (a.getName().equals("player") && b.getName().equals("obstacle")
-				|| b.getName().equals("player") && a.getName().equals("obstacle")) {
-			gameOver();
-			return true;
-		}
-		return false;
-	}
-
 	public void createBalloon() {
-		Balloon balloon = new Balloon();
-// Balloon balloon = new Balloon(BalloonType.BLACK);
+// Balloon balloon = new Balloon();
+		Balloon balloon = new Balloon(BalloonType.BLACK);
 		balloons.add(balloon);
 		hitboxActors.add(balloon);
 		stage.addActor(balloon);
@@ -299,13 +202,17 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			player.firing = true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			player.firing = false;
+		}
 		return false;
 	}
 
@@ -317,6 +224,7 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		
 		if (screenX <= Constants.WIDTH / 2) {
 			playerSpeed = 15.0f;
 			leftDown = true;

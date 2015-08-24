@@ -31,6 +31,7 @@ public class Assets {
 		}
 		return labelStyle;
 	}
+	
 
 	public static Texture getTex(String path) {
 		return getTex(path, FileType.Internal);

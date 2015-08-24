@@ -6,11 +6,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Rainbow extends HitboxActor {
 	Image image;
 	AnimatedSprite hitSprite;
+	Actor ghost;
 	Player player;
 	boolean drawHit;
 	float origWidth;
@@ -23,8 +25,11 @@ public class Rainbow extends HitboxActor {
 		image = new Image(Assets.getTex("Effects/rainbow.png"));
 		hitSprite = new AnimatedSprite(Utils.getAnimation("Effects/rainbowhit.png", 1 / 15f, 500,
 				475, 5, PlayMode.NORMAL));
+		hitSprite.setAlpha(0.0f);
 		origWidth = image.getWidth();
 		setSize(image.getWidth(), image.getHeight());
+		setVisible(false);
+		ghost = new Actor();
 	}
 
 	public Player getPlayer() {
@@ -35,25 +40,32 @@ public class Rainbow extends HitboxActor {
 	public void act(float delta) {
 		super.act(delta);
 
+		image.setSize(getWidth(), getHeight());
+		image.setPosition(getX(), getY());
+		
 		image.act(delta);
 		hitSprite.update(delta);
+		ghost.act(delta);
 	}
-
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 
-		image.setSize(getWidth(), getHeight());
-		image.setPosition(getX(), getY());
+		
 		image.draw(batch, parentAlpha);
 
-		if(Gdx.input.isKeyPressed(Keys.F1)){
+		if (Gdx.input.isKeyPressed(Keys.F1)) {
 			player.rainbow.hitSprite.stop();
 			player.rainbow.hitSprite.play();
 		}
-		hitSprite.setPosition(getX() + image.getWidth() - hitSprite.getWidth() / 2,
-				getY() + image.getHeight() / 2 - 475 / 2f - 18);
+
+		if (ghost.getActions().size == 0) {
+			hitSprite.setPosition(getX() + image.getWidth() - hitSprite.getWidth() / 2, getY()
+					+ image.getHeight() / 2 - 475 / 2f - 18);
+		} else {
+			hitSprite.setPosition(ghost.getX(), ghost.getY());
+		}
 
 		hitSprite.draw(batch);
 

@@ -74,6 +74,7 @@ public class Balloon extends HitboxActor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
+		
 		sprite.draw(batch, parentAlpha);
 	}
 

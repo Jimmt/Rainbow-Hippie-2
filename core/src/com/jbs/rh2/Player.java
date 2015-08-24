@@ -59,7 +59,9 @@ public class Player extends HitboxActor {
 
 		sprite.draw(batch, parentAlpha);
 
+		rainbow.setVisible(false);
 		if (firing) {
+			rainbow.setVisible(true);
 			int index = sprite.getAnimation().getKeyFrameIndex(sprite.getTime());
 			int offsetY = offsets[index];
 

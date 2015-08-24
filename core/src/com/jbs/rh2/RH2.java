@@ -14,6 +14,8 @@ public class RH2 extends Game {
 	public void create() {
 		DEBUG = true;
 
+		Prefs.init();
+		
 		if (DEBUG) {
 			setScreen(new StartScreen(this));
 		} else {

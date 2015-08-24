@@ -86,7 +86,7 @@ public class Hud extends Group {
 		
 		for (int i = 0; i < x; i++) {
 			for (int j = 0; j < y; j++) {
-				Image splat = new Image(Assets.getTex("extra asset/0" + (int) (Math.random() * 5)
+				Image splat = new Image(Assets.getTex("Effects/Splat/0" + (int) (Math.random() * 5)
 						+ "_Splat.png"));
 				splat.setPosition(margin + i * (splat.getWidth() * 0.83f - MathUtils.random(20, 40)),
 						margin + j * (splat.getHeight() * 0.83f - MathUtils.random(10, 30)));
