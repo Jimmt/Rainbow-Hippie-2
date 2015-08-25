@@ -54,7 +54,6 @@ public class LevelScreen implements Screen, InputProcessor {
 		hud = new Hud(this);
 		hudStage.addActor(hud);
 
-
 		Gdx.input.setInputProcessor(new InputMultiplexer(hudStage, this, stage));
 	}
 
@@ -154,8 +153,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	}
 
 	public void createBalloon() {
-// Balloon balloon = new Balloon();
-		Balloon balloon = new Balloon(BalloonType.BLACK);
+		Balloon balloon = new Balloon();
+// Balloon balloon = new Balloon(BalloonType.BLACK);
 		balloons.add(balloon);
 		hitboxActors.add(balloon);
 		stage.addActor(balloon);
@@ -203,6 +202,8 @@ public class LevelScreen implements Screen, InputProcessor {
 	public boolean keyDown(int keycode) {
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
 			player.firing = true;
+			SoundManager.loop("shoot");
+			SoundManager.play("tap");
 		}
 		return false;
 	}
@@ -211,6 +212,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	public boolean keyUp(int keycode) {
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
 			player.firing = false;
+			SoundManager.stop("shoot");
 		}
 		return false;
 	}
@@ -223,12 +225,13 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		
+		SoundManager.play("tap");
 		if (screenX <= Constants.WIDTH / 2) {
 			playerSpeed = 15.0f;
 			leftDown = true;
 		} else {
 			rightDown = true;
+			SoundManager.loop("shoot");
 		}
 		return false;
 	}
@@ -239,6 +242,7 @@ public class LevelScreen implements Screen, InputProcessor {
 			leftDown = false;
 		} else {
 			rightDown = false;
+			SoundManager.stop("shoot");
 		}
 		return false;
 	}

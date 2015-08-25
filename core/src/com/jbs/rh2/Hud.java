@@ -140,8 +140,10 @@ public class Hud extends Group {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (sound.getStyle().equals(soundOnStyle)) {
+					SoundManager.setPlay(false);
 					sound.setStyle(soundOffStyle);
 				} else {
+					SoundManager.setPlay(true);
 					sound.setStyle(soundOnStyle);
 				}
 			}

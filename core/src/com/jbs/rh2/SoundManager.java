@@ -40,6 +40,11 @@ public class SoundManager {
 			((Music) musics.get(name)).stop();
 	}
 
+	public static void stop(String name) {
+		if (play)
+			((Sound) sounds.get(name)).stop();
+	}
+
 	public static void play(String name, float volume) {
 		if (play)
 			((Sound) sounds.get(name)).play(volume);
@@ -83,6 +88,11 @@ public class SoundManager {
 			Entries<String, Music> entries = musics.entries();
 			while (entries.hasNext()) {
 				entries.next().value.pause();
+			}
+
+			Entries<String, Sound> soundEntries = sounds.entries();
+			while (soundEntries.hasNext()) {
+				soundEntries.next().value.stop();
 			}
 		}
 	}

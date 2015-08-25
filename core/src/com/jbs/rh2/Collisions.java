@@ -68,7 +68,7 @@ public class Collisions {
 			Balloon balloon = balloons.get(i);
 			if (screen.player.rainbow.getHitbox().overlaps(balloon.getHitbox())
 					&& screen.player.rainbow.isVisible()) {
-				
+
 				if (balloon.lastSubtractTime == 1.0f) {
 					screen.player.rainbow.hitSprite.setAlpha(1.0f);
 					screen.player.rainbow.hitSprite.stop();
@@ -90,14 +90,11 @@ public class Collisions {
 				balloonFound = true;
 
 				if (balloon.type != BalloonType.BLACK) {
-					screen.player.rainbow.ghost.addAction(Actions.sequence(
-							Actions.moveTo(
-									contactBalloon.getX() - contactBalloon.sprite.getWidth() / 2,
-									screen.player.rainbow.getY()
-											+ screen.player.rainbow.image.getHeight() / 2 - 475
-											/ 2f), Actions.delay(1f)));
-// getX() + image.getWidth() - hitSprite.getWidth() / 2,
-// getY() + image.getHeight() / 2 - 475 / 2f - 18
+					SoundManager.play("point");
+					float moveX = contactBalloon.getX() - contactBalloon.sprite.getWidth() / 2;
+					float moveY = screen.player.rainbow.getY()
+							+ screen.player.rainbow.image.getHeight() / 2 - 475 / 2f;
+					screen.player.rainbow.ghost.addAction(Actions.sequence(Actions.moveTo(moveX, moveY), Actions.delay(1f)));
 					screen.stage.getActors().removeValue(balloon, false);
 					balloons.removeValue(balloon, false);
 					hitboxActors.removeValue(balloon, false);
