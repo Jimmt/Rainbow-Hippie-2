@@ -13,6 +13,7 @@ public class SoundManager {
 	static ObjectMap<String, Music> musics;
 
 	private static boolean play = true;
+	
 
 	public static void init() {
 		sounds = new ObjectMap<String, Sound>();

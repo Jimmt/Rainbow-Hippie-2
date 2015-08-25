@@ -16,6 +16,7 @@ public class RH2 extends Game {
 
 		Prefs.init();
 		SoundManager.init();
+		SoundManager.setPlay(false); //FOR DEBUGGING, RE-ENABLE
 		
 		SoundManager.loadSound("death", "SFX/hippie/death.wav");
 		SoundManager.loadSound("point", "SFX/hippie/point.wav");
