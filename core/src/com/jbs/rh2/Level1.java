@@ -24,6 +24,8 @@ public class Level1 extends LevelScreen {
 
 		bgStage.addActor(background);
 		stage.addActor(player);
+		
+		gameOverDialog = new GameOverDialog(rh2, 1);
 
 		sr = new ShapeRenderer();
 	}

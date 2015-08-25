@@ -54,7 +54,6 @@ public class LevelScreen implements Screen, InputProcessor {
 		hud = new Hud(this);
 		hudStage.addActor(hud);
 
-		gameOverDialog = new GameOverDialog();
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(hudStage, this, stage));
 	}
@@ -145,7 +144,7 @@ public class LevelScreen implements Screen, InputProcessor {
 			gameOver = true;
 			gameOverDialog.setScore(score);
 			dialogStage.addActor(gameOverDialog);
-			gameOverDialog.show();
+			gameOverDialog.show(score);
 			Gdx.input.setInputProcessor(dialogStage);
 		}
 	}

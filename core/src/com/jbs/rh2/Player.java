@@ -47,6 +47,12 @@ public class Player extends HitboxActor {
 		sprite.update(delta);
 
 		if (firing) {
+			int index = sprite.getAnimation().getKeyFrameIndex(sprite.getTime());
+			int offsetY = offsets[index];
+
+			mouth.setPosition(getX() + mouthX, getY() + mouthY + offsetY);
+			rainbow.setPosition(mouth.getX(),
+					mouth.getY() + mouth.getHeight() / 2 - rainbow.getHeight() / 2);
 			rainbow.act(delta);
 			mouth.act(delta);
 		}
@@ -62,12 +68,6 @@ public class Player extends HitboxActor {
 		rainbow.setVisible(false);
 		if (firing) {
 			rainbow.setVisible(true);
-			int index = sprite.getAnimation().getKeyFrameIndex(sprite.getTime());
-			int offsetY = offsets[index];
-
-			mouth.setPosition(getX() + mouthX, getY() + mouthY + offsetY);
-			rainbow.setPosition(mouth.getX(),
-					mouth.getY() + mouth.getHeight() / 2 - rainbow.getHeight() / 2);
 
 			mouth.draw(batch, parentAlpha);
 			rainbow.draw(batch, parentAlpha);

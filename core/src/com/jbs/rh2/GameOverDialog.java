@@ -4,26 +4,34 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameOverDialog extends Group {
 	Label gameOverLabel, scoreLabel, bestScoreLabel;
 	ImageButton replay, back;
+	Stars stars;
 	Image background;
+	RH2 rh2;
+	int level;
 
 	int score;
 
-	public GameOverDialog() {
+	public GameOverDialog(RH2 rh2, int level) {
 		background = new Image(Assets.getTex("UI/Endgame/window.png"));
-
+		this.rh2 = rh2;
+		this.level = level;
 	}
 
-	public void show() {
+	public void show(int score) {
+		stars = new Stars(score);
+		
 		background.setPosition(Constants.WIDTH / 2 - background.getWidth() / 2, Constants.HEIGHT
 				/ 2 - background.getHeight() / 2);
 
@@ -48,14 +56,19 @@ public class GameOverDialog extends Group {
 		backStyle.up = new Image(Assets.getTex("UI/Endgame/back_normal.png")).getDrawable();
 		backStyle.down = new Image(Assets.getTex("UI/Endgame/back_pressed.png")).getDrawable();
 		replay = new ImageButton(replayStyle);
-		replay.setPosition(background.getX() + 52, background.getY());
+		replay.setPosition(background.getX() + 52, background.getY() - 20);
 		back = new ImageButton(backStyle);
-		back.setPosition(background.getX() + 271, background.getY());
+		back.setPosition(background.getX() + 271, background.getY() - 20);
+
+		setupListeners();
+		
+		stars.setPosition(background.getX() + background.getWidth() / 2 - stars.getWidth() / 2, background.getY() + 60f);
 
 		addActor(background);
 		addActor(gameOverLabel);
 		addActor(scoreLabel);
 		addActor(bestScoreLabel);
+		addActor(stars);
 		addActor(replay);
 		addActor(back);
 
@@ -66,6 +79,29 @@ public class GameOverDialog extends Group {
 						Actions.fadeIn(0.4f, Interpolation.fade)));
 			}
 		}
+	}
+
+	public void setupListeners() {
+		replay.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (level == 1) {
+					rh2.setScreen(new Level1(rh2));
+				}
+				if (level == 2) {
+					rh2.setScreen(new Level2(rh2));
+				}
+				if (level == 3) {
+
+				}
+			}
+		});
+		back.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				rh2.setScreen(new StartScreen(rh2));
+			}
+		});
 	}
 
 	public void setScore(int score) {
@@ -84,7 +120,7 @@ public class GameOverDialog extends Group {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		
+
 	}
 
 }

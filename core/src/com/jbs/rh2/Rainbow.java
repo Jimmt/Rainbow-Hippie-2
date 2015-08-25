@@ -40,9 +40,6 @@ public class Rainbow extends HitboxActor {
 	public void act(float delta) {
 		super.act(delta);
 
-		image.setSize(getWidth(), getHeight());
-		image.setPosition(getX(), getY());
-		
 		image.act(delta);
 		hitSprite.update(delta);
 		ghost.act(delta);
@@ -52,7 +49,8 @@ public class Rainbow extends HitboxActor {
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 
-		
+		image.setSize(getWidth(), getHeight());
+		image.setPosition(getX(), getY());
 		image.draw(batch, parentAlpha);
 
 		if (Gdx.input.isKeyPressed(Keys.F1)) {
