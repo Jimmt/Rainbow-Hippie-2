@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -85,6 +84,7 @@ public class GameOverDialog extends Group {
 		replay.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				if (level == 1) {
 					rh2.setScreen(new Level1(rh2));
 				}
@@ -99,6 +99,7 @@ public class GameOverDialog extends Group {
 		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				rh2.setScreen(new StartScreen(rh2));
 			}
 		});
@@ -109,6 +110,7 @@ public class GameOverDialog extends Group {
 
 		if (score > Prefs.prefs.getInteger("bestScore")) {
 			Prefs.prefs.putInteger("bestScore", score);
+			SoundManager.play("highscore", 0.25f);
 		}
 	}
 

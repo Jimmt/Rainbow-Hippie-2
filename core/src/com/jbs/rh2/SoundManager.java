@@ -94,6 +94,11 @@ public class SoundManager {
 			while (soundEntries.hasNext()) {
 				soundEntries.next().value.stop();
 			}
+		} else {
+			Entries<String, Music> entries = musics.entries();
+			while (entries.hasNext()) {
+				entries.next().value.play();
+			}
 		}
 	}
 

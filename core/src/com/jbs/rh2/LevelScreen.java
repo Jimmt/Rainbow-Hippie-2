@@ -140,6 +140,9 @@ public class LevelScreen implements Screen, InputProcessor {
 
 	public void gameOver() {
 		if (!gameOver) {
+			SoundManager.play("death", 0.6f);
+			SoundManager.play("gameover", 0.2f);
+			SoundManager.stop("shoot");
 			gameOver = true;
 			gameOverDialog.setScore(score);
 			dialogStage.addActor(gameOverDialog);

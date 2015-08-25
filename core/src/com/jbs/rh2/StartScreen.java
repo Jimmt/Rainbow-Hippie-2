@@ -33,6 +33,10 @@ public class StartScreen implements Screen, InputProcessor {
 
 	public StartScreen(RH2 rh2) {
 		this.rh2 = rh2;
+		
+		SoundManager.musics.get("music").setLooping(true);
+		SoundManager.playMusic("music", 0.2f);
+		
 		stage = new Stage(new FillViewport(Constants.WIDTH, Constants.HEIGHT));
 		bgStage = new Stage(new FillViewport(Constants.WIDTH, Constants.HEIGHT));
 
@@ -75,18 +79,21 @@ public class StartScreen implements Screen, InputProcessor {
 		items[0].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				shopDialog.show(stage);
 			}
 		});
 		items[1].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				rh2.setScreen(new Level1(rh2));
 			}
 		});
 		items[2].addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				rh2.setScreen(new Level2(rh2));
 			}
 

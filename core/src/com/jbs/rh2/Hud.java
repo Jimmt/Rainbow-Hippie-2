@@ -127,6 +127,7 @@ public class Hud extends Group {
 		pause.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				screen.pause();
 
 				if (screen.paused) {
@@ -139,6 +140,7 @@ public class Hud extends Group {
 		sound.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundManager.play("button");
 				if (sound.getStyle().equals(soundOnStyle)) {
 					SoundManager.setPlay(false);
 					sound.setStyle(soundOffStyle);

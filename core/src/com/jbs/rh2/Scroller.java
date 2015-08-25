@@ -3,6 +3,7 @@ package com.jbs.rh2;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -74,7 +75,7 @@ public class Scroller extends Actor implements GestureListener {
 	public void lock() {
 		float smallestDistance = 999;
 		int index = 0;
-
+		
 		for (int i = 0; i < items.size; i++) {
 			float newSmallestDistance = Math.min(
 					smallestDistance,
@@ -85,8 +86,9 @@ public class Scroller extends Actor implements GestureListener {
 			}
 			smallestDistance = newSmallestDistance;
 		}
-
+		
 		setCurrentSelection(index);
+		
 	}
 
 	@Override
@@ -128,6 +130,7 @@ public class Scroller extends Actor implements GestureListener {
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {
 		if (first) {
+			SoundManager.play("swipe" + MathUtils.random(1, 3));
 			first = false;
 		} else {
 			for (int i = 0; i < items.size; i++) {
