@@ -25,6 +25,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	Collisions collisions;
 
 	Player player;
+	Boss boss;
 
 	boolean gameOver, paused;
 	boolean leftDown, rightDown;
@@ -71,8 +72,12 @@ public class LevelScreen implements Screen, InputProcessor {
 			bgStage.act(delta);
 			stage.act(delta);
 			collisions.update(this, delta);
-			spawnBalloons(delta);
-			spawnObstacles(delta);
+
+			if (!boss.active || boss.left) {
+				spawnBalloons(delta);
+				spawnObstacles(delta);
+			}
+
 			scrollCamera(cameraSpeed);
 		}
 

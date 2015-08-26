@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Player extends HitboxActor {
+	public Rainbow rainbow;
 	AnimatedSprite sprite;
 	Actor ghost;
-	Rainbow rainbow;
 	Image mouth;
 	float mouthX, mouthY, animSpeed = 1 / 7f;
 	boolean firing;

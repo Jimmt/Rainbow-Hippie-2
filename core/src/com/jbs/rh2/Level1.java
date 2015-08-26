@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Level1 extends LevelScreen {
 	Level1Background background;
-	Level1Boss boss;
 	BossHealthBar healthBar;
 
 	float lastObstacleSpawn, obstacleTime = 4f;
@@ -48,13 +47,7 @@ public class Level1 extends LevelScreen {
 		}
 
 		removeOffscreen();
-
-		if (score >= 60) {
-			if (!boss.active) {
-				boss.show();
-				healthBar.show();
-			}
-		}
+		
 	}
 
 	@Override
@@ -89,6 +82,9 @@ public class Level1 extends LevelScreen {
 				sr.rect(actor.x, actor.y, actor.width, actor.height);
 			}
 		}
+		Level1Boss boss1 = (Level1Boss) boss;
+		sr.rect(boss1.headHitbox.getX(), boss1.headHitbox.getY(), boss1.headHitbox.getWidth(), boss1.headHitbox.getHeight());
+		sr.rect(boss1.neckHitbox.getX(), boss1.neckHitbox.getY(), boss1.neckHitbox.getWidth(), boss1.neckHitbox.getHeight());
 		sr.end();
 	}
 
