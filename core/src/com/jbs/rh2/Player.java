@@ -40,7 +40,7 @@ public class Player extends HitboxActor {
 		
 		setX(getStage().getCamera().position.x - Constants.WIDTH / 2);
 
-		setHitboxBounds(getX() + 17, getY() + 10, sprite.getWidth() - 24, sprite.getHeight() - 20);
+		setHitboxBounds(getX() + 62, getY() + 10, sprite.getWidth() - 100, sprite.getHeight() - 20);
 
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(getRotation());

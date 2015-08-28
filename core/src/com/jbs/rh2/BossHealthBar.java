@@ -58,7 +58,9 @@ public class BossHealthBar extends Group {
 	public void act(float delta) {
 		super.act(delta);
 
-		bar.setWidth(15 + (Math.max(boss.health, 0) / boss.maxHealth * (maxBarWidth - 15)));
+		if (bar.getActions().size == 0) {
+			bar.addAction(Actions.sizeTo(15 + Math.max(boss.health, 0) / boss.maxHealth * (maxBarWidth - 15), bar.getHeight(), 0.4f));
+		}
 
 		setVisible(active);
 	}

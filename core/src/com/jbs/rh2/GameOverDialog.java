@@ -28,6 +28,7 @@ public class GameOverDialog extends Group {
 		this.level = level;
 	}
 
+	//100 for 1 star , 200 - 2 , 300 - 3 (tentative)
 	public void show(int score) {
 		stars = new Stars(score);
 		
