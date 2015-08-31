@@ -1,6 +1,7 @@
 package com.jbs.rh2;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
@@ -16,6 +17,7 @@ public class Stars extends Group {
 		for (int i = 0; i < 3; i++) {
 			stars[i] = new ImageButton(style);
 			stars[i].setChecked(true);
+			stars[i].setTouchable(Touchable.disabled);
 			addActor(stars[i]);
 		}
 

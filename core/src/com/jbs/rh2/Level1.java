@@ -48,6 +48,11 @@ public class Level1 extends LevelScreen {
 
 		removeOffscreen();
 		
+		Level1Boss level1boss = (Level1Boss) boss;
+		if(level1boss.rainbow.overlaps(player.hitbox) && level1boss.rainbow.getColor().a == 1f){
+			gameOver();
+		}
+		
 	}
 
 	@Override
@@ -85,6 +90,10 @@ public class Level1 extends LevelScreen {
 		Level1Boss boss1 = (Level1Boss) boss;
 		sr.rect(boss1.headHitbox.getX(), boss1.headHitbox.getY(), boss1.headHitbox.getWidth(), boss1.headHitbox.getHeight());
 		sr.rect(boss1.neckHitbox.getX(), boss1.neckHitbox.getY(), boss1.neckHitbox.getWidth(), boss1.neckHitbox.getHeight());
+		sr.polygon(boss1.rainbow.polygon.getTransformedVertices());
+		sr.line(boss1.playerPosition, boss1.rainbowPosition);
+		sr.circle(boss1.unicorn.getX() + boss1.unicorn.getWidth() / 2, boss1.unicorn.getY() + boss1.unicorn.getHeight() / 2, 10);
+		sr.circle(player.x + player.width / 2, player.y + player.height / 2, 10);
 		sr.end();
 	}
 
