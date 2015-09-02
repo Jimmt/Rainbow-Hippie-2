@@ -6,35 +6,29 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
-public class CloudGroup extends Actor {
+public class SmallCloudGroup extends Actor {
 	Array<Image> clouds;
 	String path, name;
-	int number;
 	Stage stage;
-	float nextCloud = 0, velocity = 0;
+	float nextCloud = 0, velocity = 0, height;
 
-	public CloudGroup(int number, Stage stage) {
+	public SmallCloudGroup(String path, String name, float height, Stage stage) {
 		clouds = new Array<Image>();
-		path = "Maps/Forever Land Of Happiness/0" + number + ".png";
-
-		this.number = number;
+		
+		this.path = path;
+		this.height = height;
 		this.stage = stage;
+		this.name = name;
 
 		for (int i = 0; i < 2; i++) {
 			Image cloud = new Image(Assets.getTex(path));
 			stage.addActor(cloud);
-			cloud.setPosition(i * cloud.getWidth(), number);
-			cloud.setName("cloud" + number);
+			cloud.setPosition(i * cloud.getWidth(), height);
+			cloud.setName("cloud" + height);
 			clouds.add(cloud);
 		}
-		setVelocity(MathUtils.random(-1f, 1f));
-	}
 
-	@Override
-	public void setName(String name) {
-		super.setName(name);
-
-		this.name = name;
+		setVelocity(MathUtils.random(-2f, 2f));
 	}
 
 	public void removeClouds() {
@@ -73,15 +67,15 @@ public class CloudGroup extends Actor {
 		if (clouds.get(0).getX() >= leftBoundX) {
 			Image cloud = new Image(Assets.getTex(path));
 			stage.addActor(cloud);
-			cloud.setPosition(leftBoundX - cloud.getWidth(), number);
-			cloud.setName("cloud" + number);
+			cloud.setPosition(leftBoundX - cloud.getWidth(), height);
+			cloud.setName(name);
 			clouds.insert(0, cloud);
 		}
 		if (clouds.get(clouds.size - 1).getX() + clouds.get(clouds.size - 1).getWidth() <= rightBoundX) {
 			Image cloud = new Image(Assets.getTex(path));
 			stage.addActor(cloud);
-			cloud.setPosition(rightBoundX - 10, number);
-			cloud.setName("cloud" + number);
+			cloud.setPosition(rightBoundX - 10, height);
+			cloud.setName(name);
 			clouds.add(cloud);
 
 		}

@@ -21,10 +21,8 @@ public class Level1Background extends Actor {
 	Array<Image> topLowerMountains;
 	Array<Image> bottomMountains;
 
-	YComparator comparator;
-
-	Image light;
-	Image background;
+	Level1Comparator comparator;
+	Image light, background;
 
 	float nextTopUpperMountain, nextTopLowerMountain, nextBottomMountain, lastOffset;
 
@@ -47,7 +45,7 @@ public class Level1Background extends Actor {
 		nextTopUpperMountain = MathUtils.random(-258, -200);
 		nextTopLowerMountain = nextTopUpperMountain + MathUtils.random(100) - 40f;
 
-		comparator = new YComparator();
+		comparator = new Level1Comparator();
 
 		light = new Image(Assets.getTex("Effects/light.png"));
 		light.setSize(Constants.WIDTH, Constants.HEIGHT);

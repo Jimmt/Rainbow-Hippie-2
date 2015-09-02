@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.MathUtils;
 public class Level2 extends LevelScreen {
 	Level2Background background;
 	BossHealthBar healthBar;
-
 	float lastObstacleSpawn, obstacleTime = 4f;
 	float lastBalloonSpawn, balloonTime = 3f;
 
@@ -18,8 +17,8 @@ public class Level2 extends LevelScreen {
 		super(rh2);
 
 		background = new Level2Background(bgStage);
-		score = 60;
-		boss = new Level1Boss(this);
+//		score = 60;
+		boss = new Level2Boss(this);
 		healthBar = new BossHealthBar(boss);
 		healthBar.setPosition(0, Constants.HEIGHT - healthBar.getHeight());
 
@@ -28,7 +27,7 @@ public class Level2 extends LevelScreen {
 		stage.addActor(boss);
 		hudStage.addActor(healthBar);
 
-		gameOverDialog = new GameOverDialog(rh2, 1);
+		gameOverDialog = new GameOverDialog(rh2, 2);
 
 		sr = new ShapeRenderer();
 	}

@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class YComparator implements Comparator<Actor> {
+public class Level1Comparator implements Comparator<Actor> {
 	float[] cloudBounds = { 0, 177, 301, 353, 467, 643 };
 
 	@Override

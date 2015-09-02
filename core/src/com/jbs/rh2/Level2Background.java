@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
@@ -11,47 +12,48 @@ import com.badlogic.gdx.utils.Array;
 public class Level2Background extends Actor {
 	Stage stage;
 
-	CloudGroup clouds0;
-	CloudGroup clouds1;
-	CloudGroup clouds2;
-	CloudGroup clouds3;
-	CloudGroup clouds4;
-	CloudGroup[] cloudGroups;
-	Array<Image> topUpperMountains;
-	Array<Image> topLowerMountains;
-	Array<Image> bottomMountains;
+	SmallCloudGroup topClouds0, topClouds1, bottomClouds;
+	WaveGroup waves0;
+	WaveGroup waves1;
+	WaveGroup waves2;
+	WaveGroup waves3;
+	WaveGroup[] waveGroups;
+	Array<Image> hills;
 
-	YComparator comparator;
+	Level2Comparator comparator;
+	Image light, background, sunImage;
+	Group sun;
 
-	Image light;
-	Image background;
-
-	float nextTopUpperMountain, nextTopLowerMountain, nextBottomMountain, lastOffset;
+	float nextHill;
 
 	public Level2Background(Stage stage) {
-		clouds0 = new CloudGroup(0, stage);
-		clouds1 = new CloudGroup(1, stage);
-		clouds2 = new CloudGroup(2, stage);
-		clouds3 = new CloudGroup(3, stage);
-		clouds4 = new CloudGroup(4, stage);
-
-		CloudGroup[] temp = { clouds0, clouds1, clouds2, clouds3, clouds4 };
-		cloudGroups = temp;
-
-		topUpperMountains = new Array<Image>();
-		topLowerMountains = new Array<Image>();
-		bottomMountains = new Array<Image>();
-
+		setName("level2background");
+		
+		waves0 = new WaveGroup(0, stage);
+		waves1 = new WaveGroup(1, stage);
+		waves2 = new WaveGroup(2, stage);
+		waves3 = new WaveGroup(3, stage);
+		WaveGroup[] temp = { waves0, waves1, waves2, waves3 };
+		waveGroups = temp;
+		
+		topClouds0 = new SmallCloudGroup("Maps/Waves Of Paradise/00.png",  "topClouds0", waves3.getY() + 60, stage);
+		topClouds1 = new SmallCloudGroup("Maps/Waves Of Paradise/01.png", "topClouds1", waves3.getY() + 70, stage);
+		bottomClouds = new SmallCloudGroup("Maps/Waves Of Paradise/01.png", "bottomClouds", -1, stage);
+		
+		hills = new Array<Image>();
 		this.stage = stage;
+		comparator = new Level2Comparator();
 
-		nextTopUpperMountain = MathUtils.random(-258, -200);
-		nextTopLowerMountain = nextTopUpperMountain + MathUtils.random(100) - 40f;
-
-		comparator = new YComparator();
-
+		sun = new Group();
 		light = new Image(Assets.getTex("Effects/light.png"));
 		light.setSize(Constants.WIDTH, Constants.HEIGHT);
-		light.setName("light");
+		light.setPosition(-Constants.WIDTH / 2, -Constants.HEIGHT / 2);
+		sun.addActor(light);
+		sunImage = new Image(Assets.getTex("C:/Users/Austin/repos/rh2/android/assets/Maps/Waves Of Paradise/sun.png"));
+		sunImage.setPosition(-sunImage.getWidth() / 2 + 10, -sunImage.getHeight() / 2 + 15);
+		sun.addActor(sunImage);
+		sun.setName("sun");
+	
 		background = new Image(Assets.getTex("white.png"));
 		Color lighterColor = new Color(51 / 255f, 177 / 255f, 204 / 255f, 1.0f);
 		Color darkerColor = new Color(54 / 255f, 154 / 255f, 174 / 255f, 1.0f);
@@ -60,7 +62,7 @@ public class Level2Background extends Actor {
 		background.setName("background");
 
 		stage.addActor(background);
-		stage.addActor(light);
+		stage.addActor(sun);
 	}
 
 	@Override
@@ -69,76 +71,42 @@ public class Level2Background extends Actor {
 
 		float boundX = stage.getCamera().position.x + Constants.WIDTH / 2;
 
-		checkMountains(boundX);
-		removeMountains();
-
-		for (int i = 0; i < cloudGroups.length; i++) {
-			cloudGroups[i].act(delta);
+		checkHills(boundX);
+		removeHills();
+		
+		for (int i = 0; i < waveGroups.length; i++) {
+			waveGroups[i].act(delta);
 		}
+		topClouds0.act(delta);
+		topClouds1.act(delta);
+		bottomClouds.act(delta);
 
-		light.setX(stage.getCamera().position.x - Constants.WIDTH / 2);
 		background.setX(stage.getCamera().position.x - Constants.WIDTH / 2);
+		sun.setPosition(stage.getCamera().position.x, stage.getCamera().position.y);
 
 		stage.getActors().sort(comparator);
 	}
 
-	public void removeMountains() {
-		for (int i = 0; i < topUpperMountains.size; i++) {
-			Image mountain = topUpperMountains.get(i);
-			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
+	public void removeHills() {
+		for (int i = 0; i < hills.size; i++) {
+			Image hill = hills.get(i);
+			if (hill.getX() + hill.getWidth() < stage.getCamera().position.x
 					- Constants.WIDTH / 2) {
-				stage.getActors().removeValue(mountain, false);
-				topUpperMountains.removeIndex(i);
-			}
-		}
-		for (int i = 0; i < topLowerMountains.size; i++) {
-			Image mountain = topLowerMountains.get(i);
-			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
-					- Constants.WIDTH / 2) {
-				stage.getActors().removeValue(mountain, false);
-				topLowerMountains.removeIndex(i);
-			}
-		}
-		for (int i = 0; i < bottomMountains.size; i++) {
-			Image mountain = bottomMountains.get(i);
-			if (mountain.getX() + mountain.getWidth() < stage.getCamera().position.x
-					- Constants.WIDTH / 2) {
-				stage.getActors().removeValue(mountain, false);
-				bottomMountains.removeIndex(i);
+				stage.getActors().removeValue(hill, false);
+				hills.removeIndex(i);
 			}
 		}
 	}
 
-	public void checkMountains(float boundX) {
-		if (boundX > nextTopUpperMountain) {
-			Image mountain = new Image(Assets.getTex("Maps/Forever Land Of Happiness/06.png"));
-			mountain.setPosition(nextTopUpperMountain, Constants.HEIGHT - mountain.getHeight()
-					- MathUtils.random(10f, 50f));
-			lastOffset = MathUtils.random(150, 300);
-			nextTopUpperMountain += lastOffset;
-			topUpperMountains.add(mountain);
-			stage.addActor(mountain);
-			mountain.setName("mountain_top");
-		}
-		if (boundX > nextTopLowerMountain) {
-			Image mountain = new Image(Assets.getTex("Maps/Forever Land Of Happiness/06.png"));
-			mountain.setPosition(nextTopUpperMountain, Constants.HEIGHT - mountain.getHeight()
-					- MathUtils.random(60f, 100f));
-			nextTopUpperMountain += lastOffset;
-			topLowerMountains.add(mountain);
-			nextTopLowerMountain += lastOffset + MathUtils.random(100) - 40f;
-			stage.addActor(mountain);
-			mountain.setName("mountain_top");
-		}
-		if (boundX > nextBottomMountain) {
-			Image mountain = new Image(Assets.getTex("Maps/Forever Land Of Happiness/05.png"));
-			float y = MathUtils.random(-mountain.getHeight() / 2, mountain.getHeight() / 2);
-			mountain.setPosition(nextTopUpperMountain, y);
-			lastOffset = MathUtils.random(200, 500);
-			nextTopUpperMountain += lastOffset;
-			bottomMountains.add(mountain);
-			stage.addActor(mountain);
-			mountain.setName("mountain_bottom");
+	public void checkHills(float boundX) {
+		if (boundX > nextHill) {
+			Image hill = new Image(Assets.getTex("Maps/Waves of Paradise/04.png"));
+			hill.setPosition(nextHill, Constants.HEIGHT - hill.getHeight()
+					+ MathUtils.random(100f, 200f));
+			nextHill += hill.getWidth() + MathUtils.random(-100, 500);
+			hills.add(hill);
+			stage.addActor(hill);
+			hill.setName("hill");
 		}
 	}
 

@@ -16,9 +16,13 @@ public class Stars extends Group {
 
 		for (int i = 0; i < 3; i++) {
 			stars[i] = new ImageButton(style);
-			stars[i].setChecked(true);
+			stars[i].setChecked(false);
 			stars[i].setTouchable(Touchable.disabled);
 			addActor(stars[i]);
+		}
+		
+		for(int i = 0; i < score / 100; i++){
+			stars[i].setChecked(true);
 		}
 
 		float scale = 1.5f;

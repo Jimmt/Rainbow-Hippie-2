@@ -48,7 +48,7 @@ public class Level1Boss extends Boss {
 		rainbowPosition = new Vector2();
 		playerPosition = new Vector2();
 		diff = new Vector2();
-//		screen.score = 120;
+// screen.score = 120;
 	}
 
 	public void show() {
@@ -185,7 +185,7 @@ public class Level1Boss extends Boss {
 	public void checkDamageTaken(float delta) {
 		if (screen.player.rainbow.hitbox.overlaps(headHitbox)
 				|| screen.player.rainbow.hitbox.overlaps(neckHitbox)) {
-			health -= 1;// / 60f;
+			health -= 1 / 60f;
 		}
 	}
 

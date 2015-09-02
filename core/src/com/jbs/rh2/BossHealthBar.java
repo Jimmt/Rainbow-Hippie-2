@@ -16,8 +16,8 @@ public class BossHealthBar extends Group {
 	public BossHealthBar(Boss boss) {
 		this.boss = boss;
 		icon = new Image(Assets.getTex("Maps/" + boss.levelName + "/Boss/Icon.png"));
-		empty = new Image(Assets.getTex("Maps/" + boss.levelName + "/Boss/Barempty.png"));
-		bar = new Image(Assets.getTex("Maps/" + boss.levelName + "/Boss/HPBar.png"));
+		empty = new Image(Assets.getTex("Maps/Forever Land Of Happiness/Boss/Barempty.png"));
+		bar = new Image(Assets.getTex("Maps/Forever Land Of Happiness/Boss/HPBar.png"));
 		maxBarWidth = bar.getWidth();
 
 		empty.setPosition(icon.getWidth() - 50f, icon.getHeight() / 2 - empty.getHeight() / 2);

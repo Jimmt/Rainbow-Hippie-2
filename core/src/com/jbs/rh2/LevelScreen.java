@@ -18,6 +18,7 @@ public class LevelScreen implements Screen, InputProcessor {
 	Stage bgStage, stage, hudStage, dialogStage;
 	GameOverDialog gameOverDialog;
 	Hud hud;
+	BossHealthBar healthBar;
 
 	Array<Balloon> balloons;
 	Array<Obstacle> obstacles;
