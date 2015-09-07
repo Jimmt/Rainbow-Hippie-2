@@ -42,6 +42,11 @@ public class Level2 extends LevelScreen {
 
 		removeOffscreen();
 		
+		Level2Boss level2boss = (Level2Boss) boss;
+		if(level2boss.rainbow.overlaps(player.hitbox) && level2boss.rainbow.getColor().a == 1f){
+			gameOver();
+		}
+		
 	}
 
 	@Override

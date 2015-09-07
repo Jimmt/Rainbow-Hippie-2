@@ -36,10 +36,10 @@ public class Level2Comparator implements Comparator<Actor> {
 				return 1;
 			}
 
-			if (nameA.equals("hill") && nameB.startsWith("topClouds")) {
+			if (nameA.equals("hill") && (nameB.startsWith("topClouds") || nameB.startsWith("wave"))) {
 				return -1;
 			}
-			if (nameB.equals("hill") && nameA.startsWith("topClouds")) {
+			if ((nameB.equals("hill")) && (nameA.startsWith("topClouds") || nameA.startsWith("wave"))) {
 				return 1;
 			}
 
@@ -48,7 +48,7 @@ public class Level2Comparator implements Comparator<Actor> {
 		}
 
 		
-		if (aY > bY) {
+		if (aY > bY) {	
 			return -1;
 		} else {
 			return 1;
